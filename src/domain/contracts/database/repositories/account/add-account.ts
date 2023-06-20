@@ -1,8 +1,8 @@
-export interface AddAccount {
-  add: (account: AddAccount.Input) => Promise<void>
+export interface AddAccountRepository {
+  create: (account: AddAccountRepository.Input) => Promise<void>
 }
 
-export namespace AddAccount {
+export namespace AddAccountRepository {
   export type Input = {
     name: string
     email: string
