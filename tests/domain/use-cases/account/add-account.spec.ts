@@ -1,6 +1,7 @@
 import { accountParams } from '@/tests/mocks'
 import { CheckAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
 import { AddAccount, addAccountUseCase } from '@/domain/use-cases/account'
+import { HashGenerator } from '@/domain/contracts/gateways'
 import { FieldInUseError } from '@/domain/error'
 
 import { mock } from 'jest-mock-extended'
@@ -11,13 +12,14 @@ describe('AddAccount', () => {
   const { name, email, password, error } = accountParams
 
   const accountRepository = mock<CheckAccountByEmailRepository>()
+  const hash = mock<HashGenerator>()
 
   beforeAll(() => {
     accountRepository.checkByEmail.mockResolvedValue(false)
   })
 
   beforeEach(() => {
-    sut = addAccountUseCase(accountRepository)
+    sut = addAccountUseCase(accountRepository, hash)
   })
 
   it('should call CheckAccountByEmailRepository with correct email', async () => {
@@ -41,5 +43,12 @@ describe('AddAccount', () => {
     const promise = sut({ name, email, password })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call HashGenerator with correct plaintext', async () => {
+    await sut({ name, email, password })
+
+    expect(hash.generate).toHaveBeenCalledWith({ plaintext: password })
+    expect(hash.generate).toHaveBeenCalledTimes(1)
   })
 })
