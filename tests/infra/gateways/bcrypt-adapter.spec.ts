@@ -45,5 +45,11 @@ describe('BcryptAdapter', () => {
 
       await expect(promise).rejects.toThrow(error)
     })
+
+    it('should return a digest on success', async () => {
+      const hashed = await sut.generate({ plaintext })
+
+      expect(hashed).toBe(digest)
+    })
   })
 })
