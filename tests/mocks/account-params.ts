@@ -8,5 +8,6 @@ export const accountParams = {
   email: faker.internet.email(),
   password,
   passwordConfirmation: password,
+  hashPassword: faker.internet.password(8),
   error: new Error(faker.random.word())
 }

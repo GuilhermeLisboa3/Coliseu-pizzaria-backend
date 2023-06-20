@@ -9,13 +9,14 @@ import { mock } from 'jest-mock-extended'
 describe('AddAccount', () => {
   let sut: AddAccount
 
-  const { name, email, password, error } = accountParams
+  const { name, email, password, error, hashPassword } = accountParams
 
   const accountRepository = mock<CheckAccountByEmailRepository>()
   const hash = mock<HashGenerator>()
 
   beforeAll(() => {
     accountRepository.checkByEmail.mockResolvedValue(false)
+    hash.generate.mockResolvedValue(hashPassword)
   })
 
   beforeEach(() => {
@@ -50,5 +51,13 @@ describe('AddAccount', () => {
 
     expect(hash.generate).toHaveBeenCalledWith({ plaintext: password })
     expect(hash.generate).toHaveBeenCalledTimes(1)
+  })
+
+  it('should rethrow if HashGenerator throws', async () => {
+    hash.generate.mockRejectedValueOnce(error)
+
+    const promise = sut({ name, email, password })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
