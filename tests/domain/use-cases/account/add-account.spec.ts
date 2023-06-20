@@ -1,5 +1,5 @@
 import { accountParams } from '@/tests/mocks'
-import { CheckAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
+import { CheckAccountByEmailRepository, AddAccountRepository } from '@/domain/contracts/database/repositories/account'
 import { AddAccount, addAccountUseCase } from '@/domain/use-cases/account'
 import { HashGenerator } from '@/domain/contracts/gateways'
 import { FieldInUseError } from '@/domain/error'
@@ -11,7 +11,7 @@ describe('AddAccount', () => {
 
   const { name, email, password, error, hashPassword } = accountParams
 
-  const accountRepository = mock<CheckAccountByEmailRepository>()
+  const accountRepository = mock<CheckAccountByEmailRepository & AddAccountRepository>()
   const hash = mock<HashGenerator>()
 
   beforeAll(() => {
@@ -59,5 +59,12 @@ describe('AddAccount', () => {
     const promise = sut({ name, email, password })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call AddAccountRepository with correct values', async () => {
+    await sut({ name, email, password })
+
+    expect(accountRepository.create).toHaveBeenCalledWith({ name, email, password: hashPassword })
+    expect(accountRepository.create).toHaveBeenCalledTimes(1)
   })
 })
