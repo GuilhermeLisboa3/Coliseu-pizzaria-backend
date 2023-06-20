@@ -7,5 +7,6 @@ export const accountParams = {
   name: faker.name.findName(),
   email: faker.internet.email(),
   password,
-  passwordConfirmation: password
+  passwordConfirmation: password,
+  error: new Error(faker.random.word())
 }
