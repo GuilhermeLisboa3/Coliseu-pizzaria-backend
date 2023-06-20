@@ -10,12 +10,14 @@ describe('BcryptAdapter', () => {
 
   let plaintext: string
   let digest: string
+  let error: Error
 
   const fakeBcrypt = bcrypt as jest.Mocked<typeof bcrypt>
 
   beforeAll(() => {
     plaintext = faker.random.word()
     digest = faker.datatype.uuid()
+    error = new Error(faker.random.words(7))
   })
 
   beforeEach(() => {
@@ -34,6 +36,14 @@ describe('BcryptAdapter', () => {
 
       expect(fakeBcrypt.hash).toHaveBeenCalledWith(plaintext, salt)
       expect(fakeBcrypt.hash).toHaveBeenCalledTimes(1)
+    })
+
+    it('should rethrow if hash throw', async () => {
+      fakeBcrypt.hash.mockImplementationOnce(() => { throw error })
+
+      const promise = sut.generate({ plaintext })
+
+      await expect(promise).rejects.toThrow(error)
     })
   })
 })
