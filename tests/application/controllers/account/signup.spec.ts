@@ -45,4 +45,10 @@ describe('SignUpController', () => {
     expect(statusCode).toBe(400)
     expect(data).toEqual(new FieldInUseError('name'))
   })
+
+  it('should return created on success', async () => {
+    const { statusCode } = await sut.handle({ name, email, password })
+
+    expect(statusCode).toBe(201)
+  })
 })
