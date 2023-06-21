@@ -1,20 +1,16 @@
-import { HttpResponse, badRequest } from '@/application/helpers'
+import { Controller } from '@/application/controllers'
+import { HttpResponse } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
-import { FieldInUseError } from '@/domain/error'
 import { AddAccount } from '@/domain/use-cases/account'
 
 type HttpRequest = { name: string, email: string, password: string }
 
-export class SignUpController {
-  constructor (private readonly addAccount: AddAccount) {}
+export class SignUpController extends Controller {
+  constructor (private readonly addAccount: AddAccount) { super() }
 
   async perform ({ email, name, password }: HttpRequest): Promise<HttpResponse> {
-    try {
-      await this.addAccount({ email, name, password })
-      return { statusCode: 200, data: null }
-    } catch (error) {
-      return badRequest(new FieldInUseError('name'))
-    }
+    await this.addAccount({ email, name, password })
+    return { statusCode: 200, data: null }
   }
 
   buildValidators ({ name, email, password }: HttpRequest): Validator[] {
