@@ -20,11 +20,11 @@ describe('Controller', () => {
 
   let value: any
   let errorObject: Error
-  let error: Error
+  let error: string
 
   beforeAll(() => {
     value = faker.random.word()
-    error = new Error(faker.random.word())
+    error = faker.random.word()
     errorObject = new Error(faker.random.word())
   })
 
