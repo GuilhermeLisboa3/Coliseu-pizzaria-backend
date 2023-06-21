@@ -1,5 +1,6 @@
 import { accountParams } from '@/tests/mocks'
 import { SignUpController } from '@/application/controllers/account'
+import { Controller } from '@/application/controllers'
 import { MinSizeValidation, EmailValidation, RequiredValidation } from '@/application/validation'
 import { FieldInUseError } from '@/domain/error'
 
@@ -12,6 +13,10 @@ describe('SignUpController', () => {
 
   beforeEach(() => {
     sut = new SignUpController(addAccount)
+  })
+
+  it('should extend Controller', async () => {
+    expect(sut).toBeInstanceOf(Controller)
   })
 
   it('should build Validators correctly', async () => {
@@ -27,7 +32,7 @@ describe('SignUpController', () => {
   })
 
   it('should call addAccount with correct values', async () => {
-    await sut.perform({ name, email, password })
+    await sut.handle({ name, email, password })
 
     expect(addAccount).toHaveBeenCalledWith({ name, email, password })
     expect(addAccount).toHaveBeenCalledTimes(1)
@@ -35,7 +40,7 @@ describe('SignUpController', () => {
 
   it('should return badRequest if addAccount return FieldInUseError', async () => {
     addAccount.mockRejectedValueOnce(new FieldInUseError('name'))
-    const { statusCode, data } = await sut.perform({ name, email, password })
+    const { statusCode, data } = await sut.handle({ name, email, password })
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new FieldInUseError('name'))
