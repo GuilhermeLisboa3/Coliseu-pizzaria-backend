@@ -61,4 +61,10 @@ describe('Controller', () => {
     expect(statusCode).toBe(500)
     expect(data).toEqual(new ServerError())
   })
+
+  it('should return same result as perform', async () => {
+    const httpResponse = await sut.handle(value)
+
+    expect(httpResponse).toEqual(sut.result)
+  })
 })
