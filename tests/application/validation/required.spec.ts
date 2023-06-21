@@ -17,4 +17,12 @@ describe('RequiredValidation', () => {
 
     expect(error).toEqual(new RequiredFieldError(fieldName))
   })
+
+  it('should return RequiredFieldError if value is null', () => {
+    const sut = new RequiredValidation(null as any, fieldName)
+
+    const error = sut.validate()
+
+    expect(error).toEqual(new RequiredFieldError(fieldName))
+  })
 })
