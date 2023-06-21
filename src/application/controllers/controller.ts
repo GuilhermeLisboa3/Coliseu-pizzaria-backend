@@ -1,4 +1,4 @@
-import { badRequest, HttpResponse } from '@/application/helpers'
+import { badRequest, HttpResponse, serverError } from '@/application/helpers'
 import { ValidationComposite, Validator } from '@/application/validation'
 
 export abstract class Controller {
@@ -9,7 +9,12 @@ export abstract class Controller {
   async handle (httpRequest?: any): Promise<HttpResponse> {
     const error = this.validate(httpRequest)
     if (error) return badRequest(error)
-    return { statusCode: 200, data: null }
+    try {
+      await this.perform(httpRequest)
+      return { statusCode: 200, data: null }
+    } catch (error) {
+      return serverError(error)
+    }
   }
 
   private validate (httpRequest?: any): Error | undefined {
