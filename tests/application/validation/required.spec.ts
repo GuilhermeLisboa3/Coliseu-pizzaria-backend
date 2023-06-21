@@ -4,9 +4,11 @@ import { RequiredValidation } from '@/application/validation'
 import faker from 'faker'
 
 describe('RequiredValidation', () => {
+  let value: string
   let fieldName: string
 
   beforeAll(() => {
+    value = faker.random.words(5)
     fieldName = faker.database.column()
   })
 
@@ -32,5 +34,13 @@ describe('RequiredValidation', () => {
     const error = sut.validate()
 
     expect(error).toEqual(new RequiredFieldError(fieldName))
+  })
+
+  it('should return undefined if value is not falsy', () => {
+    const sut = new RequiredValidation(value, fieldName)
+
+    const error = sut.validate()
+
+    expect(error).toBeUndefined()
   })
 })
