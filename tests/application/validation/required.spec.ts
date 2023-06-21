@@ -25,4 +25,12 @@ describe('RequiredValidation', () => {
 
     expect(error).toEqual(new RequiredFieldError(fieldName))
   })
+
+  it('should return RequiredFieldError if value is undefined', () => {
+    const sut = new RequiredValidation(undefined as any, fieldName)
+
+    const error = sut.validate()
+
+    expect(error).toEqual(new RequiredFieldError(fieldName))
+  })
 })
