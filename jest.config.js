@@ -13,5 +13,7 @@ module.exports = {
   transform: {
     '\\.ts$': 'ts-jest'
   },
+  testEnvironment: '@quramy/jest-prisma/environment',
+  setupFilesAfterEnv: ['<rootDir>/tests/infra/database/postgres/mocks/setup-prisma.ts'],
   clearMocks: true
 }
