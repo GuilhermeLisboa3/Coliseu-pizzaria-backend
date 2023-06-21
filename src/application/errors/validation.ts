@@ -11,3 +11,10 @@ export class InvalidFieldError extends Error {
     this.name = 'InvalidFieldError'
   }
 }
+
+export class MinSizeError extends Error {
+  constructor (minSize: number) {
+    super(`minimum size is ${minSize}`)
+    this.name = 'MinSizeError'
+  }
+}
