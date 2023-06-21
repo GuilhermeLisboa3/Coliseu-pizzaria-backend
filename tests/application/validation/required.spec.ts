@@ -1,0 +1,20 @@
+import { RequiredFieldError } from '@/application/errors'
+import { RequiredValidation } from '@/application/validation'
+
+import faker from 'faker'
+
+describe('RequiredValidation', () => {
+  let fieldName: string
+
+  beforeAll(() => {
+    fieldName = faker.database.column()
+  })
+
+  it('should return RequiredFieldError if value is empty', () => {
+    const sut = new RequiredValidation('', fieldName)
+
+    const error = sut.validate()
+
+    expect(error).toEqual(new RequiredFieldError(fieldName))
+  })
+})
