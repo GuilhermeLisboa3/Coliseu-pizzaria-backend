@@ -1,6 +1,7 @@
 import { accountParams } from '@/tests/mocks'
 import { SignUpController } from '@/application/controllers/account'
 import { MinSizeValidation, EmailValidation, RequiredValidation } from '@/application/validation'
+import { FieldInUseError } from '@/domain/error'
 
 describe('SignUpController', () => {
   let sut: SignUpController
@@ -30,5 +31,13 @@ describe('SignUpController', () => {
 
     expect(addAccount).toHaveBeenCalledWith({ name, email, password })
     expect(addAccount).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return badRequest if addAccount return FieldInUseError', async () => {
+    addAccount.mockRejectedValueOnce(new FieldInUseError('name'))
+    const { statusCode, data } = await sut.perform({ name, email, password })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new FieldInUseError('name'))
   })
 })
