@@ -20,9 +20,11 @@ describe('Controller', () => {
 
   let value: any
   let errorObject: Error
+  let error: Error
 
   beforeAll(() => {
     value = faker.random.word()
+    error = new Error(faker.random.word())
     errorObject = new Error(faker.random.word())
   })
 
@@ -49,5 +51,14 @@ describe('Controller', () => {
 
     expect(statusCode).toBe(500)
     expect(data).toEqual(new ServerError(errorObject))
+  })
+
+  it('should return serverError if perform throw a non error object', async () => {
+    jest.spyOn(sut, 'perform').mockRejectedValueOnce(error)
+
+    const { statusCode, data } = await sut.handle(faker.random.word())
+
+    expect(statusCode).toBe(500)
+    expect(data).toEqual(new ServerError())
   })
 })
