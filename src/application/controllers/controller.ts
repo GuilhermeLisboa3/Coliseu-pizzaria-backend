@@ -10,8 +10,7 @@ export abstract class Controller {
     const error = this.validate(httpRequest)
     if (error) return badRequest(error)
     try {
-      await this.perform(httpRequest)
-      return { statusCode: 200, data: null }
+      return await this.perform(httpRequest)
     } catch (error) {
       return serverError(error)
     }
