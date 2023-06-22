@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers'
-import { HttpResponse } from '@/application/helpers'
+import { HttpResponse, ok } from '@/application/helpers'
 import { Validator, ValidationBuilder as Builder } from '@/application/validation'
 import { Authentication } from '@/domain/use-cases/account'
 
@@ -9,8 +9,8 @@ export class LoginController extends Controller {
   constructor (private readonly authentication: Authentication) { super() }
 
   async perform ({ email, password }: HttpRequest): Promise<HttpResponse> {
-    await this.authentication({ email, password })
-    return { statusCode: 200, data: null }
+    const result = await this.authentication({ email, password })
+    return ok(result)
   }
 
   buildValidators ({ email, password }: HttpRequest): Validator[] {
