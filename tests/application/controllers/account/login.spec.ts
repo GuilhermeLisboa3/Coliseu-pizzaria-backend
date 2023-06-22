@@ -7,8 +7,12 @@ import { UnauthorizedError } from '@/application/errors'
 
 describe('LoginController', () => {
   let sut: LoginController
-  const { email, password } = accountParams
+  const { email, password, accessToken, name } = accountParams
   const authentication = jest.fn()
+
+  beforeAll(() => {
+    authentication.mockResolvedValue({ name, accessToken })
+  })
 
   beforeEach(() => {
     sut = new LoginController(authentication)
@@ -42,5 +46,12 @@ describe('LoginController', () => {
 
     expect(statusCode).toBe(401)
     expect(data).toEqual(new UnauthorizedError())
+  })
+
+  it('should return ok if valid data is provided', async () => {
+    const { statusCode, data } = await sut.handle({ email, password })
+
+    expect(statusCode).toBe(200)
+    expect(data).toEqual({ name, accessToken })
   })
 })
