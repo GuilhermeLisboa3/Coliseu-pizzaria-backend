@@ -71,5 +71,13 @@ describe('BcryptAdapter', () => {
       expect(fakeBcrypt.compare).toHaveBeenCalledWith(plaintext, digest)
       expect(fakeBcrypt.compare).toHaveBeenCalledTimes(1)
     })
+
+    it('should return false when compare fails', async () => {
+      fakeBcrypt.compare.mockImplementationOnce(() => false)
+      await sut.compare({ plaintext, digest })
+
+      expect(fakeBcrypt.compare).toHaveBeenCalledWith(plaintext, digest)
+      expect(fakeBcrypt.compare).toHaveBeenCalledTimes(1)
+    })
   })
 })
