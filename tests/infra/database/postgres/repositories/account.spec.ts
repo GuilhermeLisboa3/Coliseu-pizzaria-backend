@@ -33,4 +33,12 @@ describe('AccountRepository', () => {
       expect(await prisma.user.findFirst({ where: { email } })).toBeTruthy()
     })
   })
+
+  describe('loadByEmail()', () => {
+    it('should return null if acccount not exist', async () => {
+      const account = await sut.loadByEmail({ email })
+
+      expect(account).toBeNull()
+    })
+  })
 })
