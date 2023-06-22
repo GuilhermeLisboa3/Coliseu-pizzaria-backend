@@ -1,5 +1,5 @@
 import { accountParams } from '@/tests/mocks'
-import { HashComparer } from '@/domain/contracts/gateways'
+import { HashComparer, TokenGenerator } from '@/domain/contracts/gateways'
 import { LoadAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
 import { Authentication, authenticationUseCase } from '@/domain/use-cases/account'
 import { AuthenticationError } from '@/domain/error'
@@ -13,6 +13,7 @@ describe('Authentication', () => {
 
   const accountRepository = mock<LoadAccountByEmailRepository>()
   const hashComparer = mock<HashComparer>()
+  const token = mock<TokenGenerator>()
 
   beforeAll(() => {
     accountRepository.loadByEmail.mockResolvedValue({ email, password: hashPassword, name, id })
@@ -20,7 +21,7 @@ describe('Authentication', () => {
   })
 
   beforeEach(() => {
-    sut = authenticationUseCase(accountRepository, hashComparer)
+    sut = authenticationUseCase(accountRepository, hashComparer, token)
   })
 
   it('should call LoadAccountByEmailRepository with correct email', async () => {
@@ -67,5 +68,12 @@ describe('Authentication', () => {
     const promise = sut({ email, password })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call TokenGenerator with correct key', async () => {
+    await sut({ email, password })
+
+    expect(token.generate).toHaveBeenCalledWith({ key: id })
+    expect(token.generate).toHaveBeenCalledTimes(1)
   })
 })
