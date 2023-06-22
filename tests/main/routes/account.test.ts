@@ -37,4 +37,15 @@ describe('Account routes', () => {
       expect(error).toEqual(new RequiredFieldError('name').message)
     })
   })
+
+  describe('POST /login', () => {
+    it('should return 200 on success', async () => {
+      await request(app).post('/signup').send({ name, email, password })
+      const { status } = await request(app)
+        .post('/login')
+        .send({ email, password })
+
+      expect(status).toBe(200)
+    })
+  })
 })
