@@ -4,6 +4,7 @@ import { prisma } from '@/infra/database/postgres/helpers'
 
 import request from 'supertest'
 import { FieldInUseError } from '@/domain/error'
+import { RequiredFieldError } from '@/application/errors'
 
 describe('Account routes', () => {
   const { name, email, password } = accountParams
@@ -25,6 +26,15 @@ describe('Account routes', () => {
 
       expect(status).toBe(400)
       expect(error).toEqual(new FieldInUseError('email').message)
+    })
+
+    it('should return 400 if has invalid data', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/signup')
+        .send({ email, password })
+
+      expect(status).toBe(400)
+      expect(error).toEqual(new RequiredFieldError('name').message)
     })
   })
 })
