@@ -6,9 +6,10 @@ import { EmailValidation, MinSizeValidation, RequiredValidation } from '@/applic
 describe('LoginController', () => {
   let sut: LoginController
   const { email, password } = accountParams
+  const authentication = jest.fn()
 
   beforeEach(() => {
-    sut = new LoginController()
+    sut = new LoginController(authentication)
   })
 
   it('should extend Controller', async () => {
@@ -24,5 +25,12 @@ describe('LoginController', () => {
       new RequiredValidation(password, 'password'),
       new MinSizeValidation(password, 5)
     ])
+  })
+
+  it('should call authentication with correct values', async () => {
+    await sut.handle({ email, password })
+
+    expect(authentication).toHaveBeenCalledWith({ email, password })
+    expect(authentication).toHaveBeenCalledTimes(1)
   })
 })
