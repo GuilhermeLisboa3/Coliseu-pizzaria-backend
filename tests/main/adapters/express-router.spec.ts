@@ -14,12 +14,14 @@ describe('Express Router Adapter', () => {
 
   let key: string
   let value: string
+  let error: string
 
   const controller = mock<Controller>()
 
   beforeAll(() => {
     key = faker.random.word()
     value = faker.random.words(6)
+    error = faker.random.words(6)
     controller.handle.mockResolvedValue({ statusCode: 201, data: { value } })
   })
 
@@ -45,12 +47,21 @@ describe('Express Router Adapter', () => {
   })
 
   it('should return statusCode and data on success', async () => {
-    req = getMockReq()
     await sut(req, res, next)
 
     expect(res.status).toHaveBeenCalledWith(201)
     expect(res.status).toHaveBeenCalledTimes(1)
     expect(res.json).toHaveBeenCalledWith({ value })
+    expect(res.json).toHaveBeenCalledTimes(1)
+  })
+
+  it('should respond with correct statusCode and error on failure', async () => {
+    controller.handle.mockResolvedValueOnce({ statusCode: 400, data: new Error(error) })
+    await sut(req, res, next)
+
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.status).toHaveBeenCalledTimes(1)
+    expect(res.json).toHaveBeenCalledWith({ error })
     expect(res.json).toHaveBeenCalledTimes(1)
   })
 })
