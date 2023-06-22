@@ -9,11 +9,13 @@ describe('JwtAdapter', () => {
   let sut: JwtAdapter
   let secret: string
   let token: string
+  let error: Error
   const fakeJwt = jwt as jest.Mocked<typeof jwt>
 
   beforeAll(() => {
     secret = faker.datatype.uuid()
     token = faker.datatype.uuid()
+    error = new Error(faker.random.word())
   })
 
   beforeEach(() => {
@@ -43,6 +45,14 @@ describe('JwtAdapter', () => {
       const accessToken = await sut.generate({ key })
 
       expect(accessToken).toBe(token)
+    })
+
+    it('should rethrow if compare throw', async () => {
+      fakeJwt.sign.mockImplementationOnce(() => { throw error })
+
+      const promise = sut.generate({ key })
+
+      await expect(promise).rejects.toThrow(error)
     })
   })
 })
