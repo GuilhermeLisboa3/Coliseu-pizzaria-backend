@@ -79,5 +79,13 @@ describe('BcryptAdapter', () => {
       expect(fakeBcrypt.compare).toHaveBeenCalledWith(plaintext, digest)
       expect(fakeBcrypt.compare).toHaveBeenCalledTimes(1)
     })
+
+    it('should rethrow if compare throw', async () => {
+      fakeBcrypt.compare.mockImplementationOnce(() => { throw error })
+
+      const promise = sut.compare({ plaintext, digest })
+
+      await expect(promise).rejects.toThrow(error)
+    })
   })
 })
