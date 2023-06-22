@@ -8,7 +8,7 @@ import { mock } from 'jest-mock-extended'
 describe('Authentication', () => {
   let sut: Authentication
 
-  const { email, password, name, id } = accountParams
+  const { email, password, name, id, error } = accountParams
 
   const accountRepository = mock<LoadAccountByEmailRepository>()
 
@@ -33,5 +33,13 @@ describe('Authentication', () => {
     const result = sut({ email, password })
 
     await expect(result).rejects.toThrow(new AuthenticationError())
+  })
+
+  it('should rethrow if LoadAccountByEmailRepository throws', async () => {
+    accountRepository.loadByEmail.mockRejectedValueOnce(error)
+
+    const promise = sut({ email, password })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
