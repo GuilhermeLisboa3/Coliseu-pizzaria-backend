@@ -60,4 +60,12 @@ describe('Authentication', () => {
 
     await expect(result).rejects.toThrow(new AuthenticationError())
   })
+
+  it('should rethrow if HashComparer throws', async () => {
+    hashComparer.compare.mockRejectedValueOnce(error)
+
+    const promise = sut({ email, password })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
