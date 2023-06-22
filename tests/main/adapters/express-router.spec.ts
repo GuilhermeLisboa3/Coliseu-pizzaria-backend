@@ -20,6 +20,7 @@ describe('Express Router Adapter', () => {
   beforeAll(() => {
     key = faker.random.word()
     value = faker.random.words(6)
+    controller.handle.mockResolvedValue({ statusCode: 201, data: { value } })
   })
 
   beforeEach(() => {
@@ -41,5 +42,15 @@ describe('Express Router Adapter', () => {
 
     expect(controller.handle).toHaveBeenCalledWith({})
     expect(controller.handle).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return statusCode and data on success', async () => {
+    req = getMockReq()
+    await sut(req, res, next)
+
+    expect(res.status).toHaveBeenCalledWith(201)
+    expect(res.status).toHaveBeenCalledTimes(1)
+    expect(res.json).toHaveBeenCalledWith({ value })
+    expect(res.json).toHaveBeenCalledTimes(1)
   })
 })
