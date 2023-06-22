@@ -16,6 +16,7 @@ describe('Authentication', () => {
 
   beforeAll(() => {
     accountRepository.loadByEmail.mockResolvedValue({ email, password: hashPassword, name, id })
+    hashComparer.compare.mockResolvedValue(true)
   })
 
   beforeEach(() => {
@@ -50,5 +51,13 @@ describe('Authentication', () => {
 
     expect(hashComparer.compare).toHaveBeenCalledWith({ plaintext: password, digest: hashPassword })
     expect(hashComparer.compare).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw AuthenticationError if HashComparer return false', async () => {
+    hashComparer.compare.mockResolvedValueOnce(false)
+
+    const result = sut({ email, password })
+
+    await expect(result).rejects.toThrow(new AuthenticationError())
   })
 })
