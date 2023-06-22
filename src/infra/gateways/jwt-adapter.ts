@@ -5,7 +5,7 @@ import { sign } from 'jsonwebtoken'
 export class JwtAdapter {
   constructor (private readonly secret: string) {}
 
-  async generate ({ key }: TokenGenerator.Input): Promise<void> {
-    sign({ key }, this.secret, { expiresIn: '2d' })
+  async generate ({ key }: TokenGenerator.Input): Promise<TokenGenerator.Output> {
+    return sign({ key }, this.secret, { expiresIn: '2d' })
   }
 }
