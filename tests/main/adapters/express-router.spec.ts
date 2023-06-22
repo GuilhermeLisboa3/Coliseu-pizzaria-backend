@@ -34,4 +34,12 @@ describe('Express Router Adapter', () => {
     expect(controller.handle).toHaveBeenCalledWith({ [key]: value })
     expect(controller.handle).toHaveBeenCalledTimes(1)
   })
+
+  it('should call handler with empty request', async () => {
+    req = getMockReq()
+    await sut(req, res, next)
+
+    expect(controller.handle).toHaveBeenCalledWith({})
+    expect(controller.handle).toHaveBeenCalledTimes(1)
+  })
 })
