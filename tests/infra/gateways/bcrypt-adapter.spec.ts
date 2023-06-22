@@ -54,7 +54,18 @@ describe('BcryptAdapter', () => {
   })
 
   describe('compare()', () => {
+    beforeAll(() => {
+      fakeBcrypt.compare.mockImplementation(() => true)
+    })
+
     it('should call compare with correct values', async () => {
+      await sut.compare({ plaintext, digest })
+
+      expect(fakeBcrypt.compare).toHaveBeenCalledWith(plaintext, digest)
+      expect(fakeBcrypt.compare).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return true when compare succeeds', async () => {
       await sut.compare({ plaintext, digest })
 
       expect(fakeBcrypt.compare).toHaveBeenCalledWith(plaintext, digest)
