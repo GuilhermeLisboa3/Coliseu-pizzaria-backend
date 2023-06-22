@@ -9,7 +9,7 @@ import { mock } from 'jest-mock-extended'
 describe('Authentication', () => {
   let sut: Authentication
 
-  const { email, password, name, id, error, hashPassword } = accountParams
+  const { email, password, name, id, error, hashPassword, accessToken } = accountParams
 
   const accountRepository = mock<LoadAccountByEmailRepository>()
   const hashComparer = mock<HashComparer>()
@@ -18,6 +18,7 @@ describe('Authentication', () => {
   beforeAll(() => {
     accountRepository.loadByEmail.mockResolvedValue({ email, password: hashPassword, name, id })
     hashComparer.compare.mockResolvedValue(true)
+    token.generate.mockResolvedValue(accessToken)
   })
 
   beforeEach(() => {
@@ -83,5 +84,11 @@ describe('Authentication', () => {
     const promise = sut({ email, password })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should return name and accessToken on success', async () => {
+    const result = await sut({ email, password })
+
+    expect(result).toEqual({ name, accessToken })
   })
 })
