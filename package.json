@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@jest-mock/express": "^2.0.2",
     "@quramy/jest-prisma": "^1.5.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
