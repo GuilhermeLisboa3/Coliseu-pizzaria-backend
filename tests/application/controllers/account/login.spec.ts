@@ -2,6 +2,8 @@ import { LoginController } from '@/application/controllers/account'
 import { Controller } from '@/application/controllers'
 import { accountParams } from '@/tests/mocks'
 import { EmailValidation, MinSizeValidation, RequiredValidation } from '@/application/validation'
+import { AuthenticationError } from '@/domain/error'
+import { UnauthorizedError } from '@/application/errors'
 
 describe('LoginController', () => {
   let sut: LoginController
@@ -32,5 +34,13 @@ describe('LoginController', () => {
 
     expect(authentication).toHaveBeenCalledWith({ email, password })
     expect(authentication).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return badRequest if addAccount return FieldInUseError', async () => {
+    authentication.mockRejectedValueOnce(new AuthenticationError())
+    const { statusCode, data } = await sut.handle({ email, password })
+
+    expect(statusCode).toBe(401)
+    expect(data).toEqual(new UnauthorizedError())
   })
 })
