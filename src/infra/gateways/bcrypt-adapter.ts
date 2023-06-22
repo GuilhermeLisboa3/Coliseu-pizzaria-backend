@@ -7,7 +7,7 @@ export class BcryptAdapter implements HashGenerator {
     return bcrypt.hash(plaintext, 12)
   }
 
-  async compare ({ plaintext, digest }: HashComparer.Input): Promise<void> {
-    await bcrypt.compare(plaintext, digest)
+  async compare ({ plaintext, digest }: HashComparer.Input): Promise<HashComparer.Output> {
+    return bcrypt.compare(plaintext, digest)
   }
 }
