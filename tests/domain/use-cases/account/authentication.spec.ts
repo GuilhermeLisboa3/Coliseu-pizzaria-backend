@@ -1,15 +1,20 @@
 import { accountParams } from '@/tests/mocks'
 import { LoadAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
 import { Authentication, authenticationUseCase } from '@/domain/use-cases/account'
+import { AuthenticationError } from '@/domain/error'
 
 import { mock } from 'jest-mock-extended'
 
 describe('Authentication', () => {
   let sut: Authentication
 
-  const { email, password } = accountParams
+  const { email, password, name, id } = accountParams
 
   const accountRepository = mock<LoadAccountByEmailRepository>()
+
+  beforeAll(() => {
+    accountRepository.loadByEmail.mockResolvedValue({ email, password, name, id })
+  })
 
   beforeEach(() => {
     sut = authenticationUseCase(accountRepository)
@@ -20,5 +25,13 @@ describe('Authentication', () => {
 
     expect(accountRepository.loadByEmail).toHaveBeenCalledWith({ email })
     expect(accountRepository.loadByEmail).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw AuthenticationError if LoadAccountByEmailRepository return null', async () => {
+    accountRepository.loadByEmail.mockResolvedValueOnce(null)
+
+    const result = sut({ email, password })
+
+    await expect(result).rejects.toThrow(new AuthenticationError())
   })
 })
