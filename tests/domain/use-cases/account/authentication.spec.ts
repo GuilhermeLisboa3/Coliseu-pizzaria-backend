@@ -76,4 +76,12 @@ describe('Authentication', () => {
     expect(token.generate).toHaveBeenCalledWith({ key: id })
     expect(token.generate).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if TokenGenerator throws', async () => {
+    token.generate.mockRejectedValueOnce(error)
+
+    const promise = sut({ email, password })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
