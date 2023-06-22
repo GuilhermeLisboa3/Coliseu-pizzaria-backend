@@ -52,4 +52,13 @@ describe('BcryptAdapter', () => {
       expect(hashed).toBe(digest)
     })
   })
+
+  describe('compare()', () => {
+    it('should call compare with correct values', async () => {
+      await sut.compare({ plaintext, digest })
+
+      expect(fakeBcrypt.compare).toHaveBeenCalledWith(plaintext, digest)
+      expect(fakeBcrypt.compare).toHaveBeenCalledTimes(1)
+    })
+  })
 })
