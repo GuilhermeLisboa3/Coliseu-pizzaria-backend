@@ -8,5 +8,6 @@ export const accountParams = {
   email: faker.internet.email(),
   password,
   hashPassword: faker.internet.password(8),
+  accessToken: faker.datatype.uuid(),
   error: new Error(faker.random.word())
 }
