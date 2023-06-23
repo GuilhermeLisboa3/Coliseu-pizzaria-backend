@@ -1,13 +1,18 @@
 import { accountParams } from '@/tests/mocks'
 import { UnauthorizedError } from '@/application/errors'
 import { AuthenticationMiddleware } from '@/application/middlewares'
+import { AuthenticationError } from '@/domain/error'
 
 describe('AuthenticationMiddleware', () => {
-  const { accessToken } = accountParams
+  const { accessToken, id } = accountParams
   const role = 'user'
   const authorization = `Bearer ${accessToken}`
   const authorize = jest.fn()
   let sut: AuthenticationMiddleware
+
+  beforeAll(() => {
+    authorize.mockResolvedValue({ accountId: id })
+  })
 
   beforeEach(() => {
     sut = new AuthenticationMiddleware(authorize, role)
@@ -39,5 +44,14 @@ describe('AuthenticationMiddleware', () => {
 
     expect(authorize).toHaveBeenCalledWith({ accessToken, role })
     expect(authorize).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return unauthorized if authorize return AuthenticationError', async () => {
+    authorize.mockRejectedValueOnce(new AuthenticationError())
+
+    const { statusCode, data } = await sut.handle({ authorization })
+
+    expect(statusCode).toBe(401)
+    expect(data).toEqual(new UnauthorizedError())
   })
 })
