@@ -48,4 +48,12 @@ describe('AccountRepository', () => {
       expect(account).toEqual({ id, name, email, password, role: 'user' })
     })
   })
+
+  describe('checkByRole()', () => {
+    it('should return false if account does not exists', async () => {
+      const result = await sut.checkByRole({ accountId: id })
+
+      expect(result).toBe(false)
+    })
+  })
 })
