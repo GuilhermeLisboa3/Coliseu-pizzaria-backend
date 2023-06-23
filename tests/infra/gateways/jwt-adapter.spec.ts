@@ -46,7 +46,7 @@ describe('JwtAdapter', () => {
       expect(accessToken).toBe(token)
     })
 
-    it('should rethrow if compare throw', async () => {
+    it('should rethrow if sign throw', async () => {
       fakeJwt.sign.mockImplementationOnce(() => { throw error })
 
       const promise = sut.generate({ key })
@@ -76,6 +76,14 @@ describe('JwtAdapter', () => {
       const result = await sut.validate({ token })
 
       expect(result).toBe(key)
+    })
+
+    it('should rethrow if verify throw', async () => {
+      fakeJwt.verify.mockImplementationOnce(() => { throw error })
+
+      const promise = sut.validate({ token })
+
+      await expect(promise).rejects.toThrow(error)
     })
   })
 })
