@@ -21,4 +21,11 @@ describe('AuthenticationMiddleware', () => {
     expect(statusCode).toBe(401)
     expect(data).toEqual(new UnauthorizedError())
   })
+
+  it('should return unauthorized if authorization is null', async () => {
+    const { statusCode, data } = await sut.handle({ authorization: null as any })
+
+    expect(statusCode).toBe(401)
+    expect(data).toEqual(new UnauthorizedError())
+  })
 })
