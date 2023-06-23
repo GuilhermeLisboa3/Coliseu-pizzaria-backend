@@ -1,7 +1,7 @@
 import { app, env } from '@/main/config'
 import { auth } from '@/main/middlewares'
 import { accountParams } from '@/tests/mocks'
-import { UnauthorizedError } from '@/application/errors'
+import { ForbiddenError, UnauthorizedError } from '@/application/errors'
 import { prisma } from '@/infra/database/postgres/helpers'
 
 import request from 'supertest'
@@ -29,5 +29,17 @@ describe('Auth Middleware', () => {
 
     expect(status).toBe(200)
     expect(body).toEqual({ accountId: id })
+  })
+
+  it('should return 403 if token is invalid', async () => {
+    const token = sign({ key: 'any_value' }, env.secret)
+    app.get('/fake_route', auth, (req, res) => { res.json(req.locals) })
+
+    const { status, body } = await request(app)
+      .get('/fake_route')
+      .set({ authorization: `Bearer: ${token}` })
+
+    expect(status).toBe(403)
+    expect(body.error).toBe(new ForbiddenError().message)
   })
 })
