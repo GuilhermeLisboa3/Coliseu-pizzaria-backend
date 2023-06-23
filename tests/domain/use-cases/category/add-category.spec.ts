@@ -8,7 +8,7 @@ import { FieldInUseError } from '@/domain/error'
 describe('addCategoryUseCase', () => {
   let sut: AddCategory
 
-  const { name } = categoryParams
+  const { name, error } = categoryParams
 
   const categoryRepository = mock<CheckCategoryByNameRepository>()
 
@@ -33,5 +33,13 @@ describe('addCategoryUseCase', () => {
     const promise = sut({ name })
 
     await expect(promise).rejects.toThrow(new FieldInUseError('name'))
+  })
+
+  it('should rethrow if CheckAccountByEmailRepository throws', async () => {
+    categoryRepository.checkByName.mockRejectedValueOnce(error)
+
+    const promise = sut({ name })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
