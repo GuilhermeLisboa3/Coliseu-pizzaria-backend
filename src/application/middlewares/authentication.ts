@@ -1,4 +1,4 @@
-import { HttpResponse, forbidden, serverError, unauthorized } from '@/application/helpers'
+import { HttpResponse, forbidden, ok, serverError, unauthorized } from '@/application/helpers'
 import { Middleware } from '@/application/middlewares/middleware'
 import { AuthenticationError, PermissionError } from '@/domain/error'
 import { Authorize } from '@/domain/use-cases/account'
@@ -12,8 +12,8 @@ export class AuthenticationMiddleware implements Middleware {
     try {
       if (!authorization) return unauthorized()
       const [, accessToken] = authorization.split(' ')
-      await this.authorize({ accessToken, role: this.role })
-      return { statusCode: 200, data: null }
+      const { accountId } = await this.authorize({ accessToken, role: this.role })
+      return ok({ accountId })
     } catch (error) {
       if (error instanceof AuthenticationError) return unauthorized()
       if (error instanceof PermissionError) return forbidden()
