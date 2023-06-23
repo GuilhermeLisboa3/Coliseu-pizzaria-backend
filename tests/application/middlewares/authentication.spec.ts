@@ -72,4 +72,11 @@ describe('AuthenticationMiddleware', () => {
     expect(statusCode).toBe(500)
     expect(data).toEqual(new ServerError(error))
   })
+
+  it('should return ok if valid data is provided', async () => {
+    const { statusCode, data } = await sut.handle({ authorization })
+
+    expect(statusCode).toBe(200)
+    expect(data).toEqual({ accountId: id })
+  })
 })
