@@ -50,6 +50,7 @@ describe('AccountRepository', () => {
   })
 
   describe('checkByRole()', () => {
+    const role = 'any_admin'
     it('should return false if account does not exists', async () => {
       const result = await sut.checkByRole({ accountId: id })
 
@@ -61,6 +62,14 @@ describe('AccountRepository', () => {
       const result = await sut.checkByRole({ accountId: id })
 
       expect(result).toBe(true)
+    })
+
+    it('should return false if account exists with invalid role', async () => {
+      await prisma.user.create({ data: { id, name, email, password } })
+
+      const result = await sut.checkByRole({ accountId: id, role })
+
+      expect(result).toBe(false)
     })
   })
 })
