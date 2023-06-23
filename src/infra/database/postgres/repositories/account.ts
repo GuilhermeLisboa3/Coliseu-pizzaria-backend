@@ -16,7 +16,7 @@ export class AccountRepository implements CheckAccountByEmailRepository, AddAcco
     return await prisma.user.findFirst({ where: { email } })
   }
 
-  async checkByRole ({ accountId }: CheckAccountByRole.Input): Promise<CheckAccountByRole.Output> {
-    return !!await prisma.user.findFirst({ where: { id: accountId } })
+  async checkByRole ({ accountId, role }: CheckAccountByRole.Input): Promise<CheckAccountByRole.Output> {
+    return !!await prisma.user.findFirst({ where: { id: accountId, OR: [{ role: role ?? 'user' }, { role: 'admin' }] } })
   }
 }
