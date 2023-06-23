@@ -51,4 +51,12 @@ describe('AuthorizeUseCase', () => {
 
     await expect(promise).rejects.toThrow(new PermissionError())
   })
+
+  it('should rethrow if CheckAccountRole throws', async () => {
+    accountRepository.checkByRole.mockRejectedValueOnce(error)
+
+    const promise = sut({ accessToken, role })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
