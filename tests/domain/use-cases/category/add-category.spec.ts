@@ -3,6 +3,7 @@ import { CheckCategoryByNameRepository } from '@/domain/contracts/database/repos
 import { AddCategory, addCategoryUseCase } from '@/domain/use-cases/category'
 
 import { mock } from 'jest-mock-extended'
+import { FieldInUseError } from '@/domain/error'
 
 describe('addCategoryUseCase', () => {
   let sut: AddCategory
@@ -10,6 +11,10 @@ describe('addCategoryUseCase', () => {
   const { name } = categoryParams
 
   const categoryRepository = mock<CheckCategoryByNameRepository>()
+
+  beforeAll(() => {
+    categoryRepository.checkByName.mockResolvedValue(false)
+  })
 
   beforeEach(() => {
     sut = addCategoryUseCase(categoryRepository)
@@ -20,5 +25,13 @@ describe('addCategoryUseCase', () => {
 
     expect(categoryRepository.checkByName).toHaveBeenCalledWith({ name })
     expect(categoryRepository.checkByName).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw FieldInUseError if CheckCategoryByNameRepository return true', async () => {
+    categoryRepository.checkByName.mockResolvedValueOnce(true)
+
+    const promise = sut({ name })
+
+    await expect(promise).rejects.toThrow(new FieldInUseError('name'))
   })
 })
