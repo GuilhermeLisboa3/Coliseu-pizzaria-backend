@@ -49,4 +49,12 @@ describe('addCategoryUseCase', () => {
     expect(categoryRepository.create).toHaveBeenCalledWith({ name })
     expect(categoryRepository.create).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if AddCategoryRepository throws', async () => {
+    categoryRepository.create.mockRejectedValueOnce(error)
+
+    const promise = sut({ name })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
