@@ -59,4 +59,10 @@ describe('AuthorizeUseCase', () => {
 
     await expect(promise).rejects.toThrow(error)
   })
+
+  it('should return accountId on success', async () => {
+    const result = await sut({ accessToken, role })
+
+    expect(result).toEqual({ accountId: id })
+  })
 })
