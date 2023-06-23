@@ -71,5 +71,13 @@ describe('AccountRepository', () => {
 
       expect(result).toBe(false)
     })
+
+    it('should return true if route does not require role and account is admin', async () => {
+      await prisma.user.create({ data: { id, name, email, password, role: 'admin' } })
+
+      const result = await sut.checkByRole({ accountId: id })
+
+      expect(result).toBe(true)
+    })
   })
 })
