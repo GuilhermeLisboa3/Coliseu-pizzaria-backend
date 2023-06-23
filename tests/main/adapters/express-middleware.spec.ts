@@ -14,12 +14,15 @@ describe('Express Middleware Adapter', () => {
 
   let key: string
   let value: string
+  let error: string
 
   const middleware = mock<Middleware>()
 
   beforeAll(() => {
     key = faker.random.word()
     value = faker.random.words(6)
+    error = faker.random.words(6)
+    middleware.handle.mockResolvedValue({ statusCode: 200, data: { [key]: value } })
   })
 
   beforeEach(() => {
@@ -42,5 +45,16 @@ describe('Express Middleware Adapter', () => {
 
     expect(middleware.handle).toHaveBeenCalledWith({})
     expect(middleware.handle).toHaveBeenCalledTimes(1)
+  })
+
+  it('should respond with correct statusCode and error on failure', async () => {
+    middleware.handle.mockResolvedValueOnce({ statusCode: 500, data: new Error(error) })
+
+    await sut(req, res, next)
+
+    expect(res.status).toHaveBeenCalledWith(500)
+    expect(res.status).toHaveBeenCalledTimes(1)
+    expect(res.json).toHaveBeenCalledWith({ error })
+    expect(res.json).toHaveBeenCalledTimes(1)
   })
 })
