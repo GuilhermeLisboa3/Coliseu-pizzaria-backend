@@ -22,7 +22,7 @@ describe('Express Middleware Adapter', () => {
     key = faker.random.word()
     value = faker.random.words(6)
     error = faker.random.words(6)
-    middleware.handle.mockResolvedValue({ statusCode: 200, data: { [key]: value } })
+    middleware.handle.mockResolvedValue({ statusCode: 200, data: { [key]: value, valueUndefined: undefined, valueNull: null, valueEmpty: '' } })
   })
 
   beforeEach(() => {
@@ -56,5 +56,12 @@ describe('Express Middleware Adapter', () => {
     expect(res.status).toHaveBeenCalledTimes(1)
     expect(res.json).toHaveBeenCalledWith({ error })
     expect(res.json).toHaveBeenCalledTimes(1)
+  })
+
+  it('should add valid data to req.locals on success', async () => {
+    await sut(req, res, next)
+
+    expect(req.locals).toEqual({ [key]: value })
+    expect(next).toHaveBeenCalledTimes(1)
   })
 })
