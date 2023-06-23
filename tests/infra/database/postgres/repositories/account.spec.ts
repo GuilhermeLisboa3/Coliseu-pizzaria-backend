@@ -55,5 +55,12 @@ describe('AccountRepository', () => {
 
       expect(result).toBe(false)
     })
+
+    it('should return true if account exist', async () => {
+      await prisma.user.create({ data: { id, name, email, password } })
+      const result = await sut.checkByRole({ accountId: id })
+
+      expect(result).toBe(true)
+    })
   })
 })
