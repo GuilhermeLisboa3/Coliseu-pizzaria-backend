@@ -1,5 +1,5 @@
 export interface CheckAccountByEmailRepository {
-  checkByEmail: (input: { email: string }) => Promise<boolean>
+  checkByEmail: (input: CheckAccountByEmailRepository.Input) => Promise<CheckAccountByEmailRepository.Output>
 }
 
 export namespace CheckAccountByEmailRepository {
