@@ -1,6 +1,6 @@
-import { HttpResponse, serverError, unauthorized } from '@/application/helpers'
+import { HttpResponse, forbidden, serverError, unauthorized } from '@/application/helpers'
 import { Middleware } from '@/application/middlewares/middleware'
-import { AuthenticationError } from '@/domain/error'
+import { AuthenticationError, PermissionError } from '@/domain/error'
 import { Authorize } from '@/domain/use-cases/account'
 
 type HttpRequest = { authorization: string }
@@ -16,6 +16,7 @@ export class AuthenticationMiddleware implements Middleware {
       return { statusCode: 200, data: null }
     } catch (error) {
       if (error instanceof AuthenticationError) return unauthorized()
+      if (error instanceof PermissionError) return forbidden()
       return serverError(error)
     }
   }
