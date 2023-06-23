@@ -1,10 +1,10 @@
 import { accountParams } from '@/tests/mocks'
-import { ForbiddenError, UnauthorizedError } from '@/application/errors'
+import { ForbiddenError, ServerError, UnauthorizedError } from '@/application/errors'
 import { AuthenticationMiddleware } from '@/application/middlewares'
 import { AuthenticationError, PermissionError } from '@/domain/error'
 
 describe('AuthenticationMiddleware', () => {
-  const { accessToken, id } = accountParams
+  const { accessToken, id, error } = accountParams
   const role = 'user'
   const authorization = `Bearer ${accessToken}`
   const authorize = jest.fn()
@@ -62,5 +62,14 @@ describe('AuthenticationMiddleware', () => {
 
     expect(statusCode).toBe(403)
     expect(data).toEqual(new ForbiddenError())
+  })
+
+  it('should returns serverError if have any throw', async () => {
+    authorize.mockRejectedValueOnce(error)
+
+    const { statusCode, data } = await sut.handle({ authorization })
+
+    expect(statusCode).toBe(500)
+    expect(data).toEqual(new ServerError(error))
   })
 })
