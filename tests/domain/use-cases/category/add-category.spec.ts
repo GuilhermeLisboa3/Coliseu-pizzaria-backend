@@ -57,4 +57,10 @@ describe('addCategoryUseCase', () => {
 
     await expect(promise).rejects.toThrow(error)
   })
+
+  it('should return category on success', async () => {
+    const result = await sut({ name })
+
+    expect(result).toBeUndefined()
+  })
 })
