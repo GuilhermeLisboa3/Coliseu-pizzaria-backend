@@ -2,7 +2,7 @@ import { accountParams } from '@/tests/mocks'
 import { Authorize, AuthorizeUseCase } from '@/domain/use-cases/account'
 import { TokenValidator } from '@/domain/contracts/gateways'
 import { CheckAccountByRole } from '@/domain/contracts/database/repositories/account'
-import { AuthenticationError } from '@/domain/error'
+import { AuthenticationError, PermissionError } from '@/domain/error'
 
 import { mock } from 'jest-mock-extended'
 
@@ -16,6 +16,7 @@ describe('AuthorizeUseCase', () => {
 
   beforeAll(() => {
     token.validate.mockResolvedValue(id)
+    accountRepository.checkByRole.mockResolvedValue(true)
   })
 
   beforeEach(() => {
@@ -41,5 +42,13 @@ describe('AuthorizeUseCase', () => {
 
     expect(accountRepository.checkByRole).toHaveBeenCalledWith({ accountId: id, role })
     expect(accountRepository.checkByRole).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw PermissionError if CheckAccountRole return false', async () => {
+    accountRepository.checkByRole.mockResolvedValueOnce(false)
+
+    const promise = sut({ accessToken, role })
+
+    await expect(promise).rejects.toThrow(new PermissionError())
   })
 })
