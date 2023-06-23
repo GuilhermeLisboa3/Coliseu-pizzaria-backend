@@ -1,6 +1,6 @@
 import { env } from '@/main/config'
-import { TokenGenerator } from '@/domain/contracts/gateways'
+import { TokenGenerator, TokenValidator } from '@/domain/contracts/gateways'
 import { JwtAdapter } from '@/infra/gateways'
 
-export const makeJwtAdapter = (): TokenGenerator =>
+export const makeJwtAdapter = (): TokenGenerator & TokenValidator =>
   new JwtAdapter(env.secret)
