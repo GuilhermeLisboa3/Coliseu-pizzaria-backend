@@ -26,7 +26,6 @@ describe('JwtAdapter', () => {
     let key: string
 
     beforeAll(() => {
-      secret = faker.datatype.uuid()
       fakeJwt.sign.mockImplementation(() => token)
     })
 
@@ -53,6 +52,21 @@ describe('JwtAdapter', () => {
       const promise = sut.generate({ key })
 
       await expect(promise).rejects.toThrow(error)
+    })
+  })
+
+  describe('validate()', () => {
+    let token: string
+
+    beforeAll(() => {
+      token = faker.datatype.uuid()
+    })
+
+    it('should call verify with correct values', async () => {
+      await sut.validate({ token })
+
+      expect(fakeJwt.verify).toHaveBeenCalledWith(token, secret)
+      expect(fakeJwt.verify).toHaveBeenCalledTimes(1)
     })
   })
 })
