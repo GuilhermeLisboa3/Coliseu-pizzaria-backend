@@ -78,4 +78,12 @@ describe('AddProductUseCase', () => {
     expect(uuid.generate).toHaveBeenCalled()
     expect(uuid.generate).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if UUIDGenerator throws', async () => {
+    uuid.generate.mockImplementationOnce(() => { throw error })
+
+    const promise = sut(makeParams)
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
