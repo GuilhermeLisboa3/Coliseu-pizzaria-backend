@@ -1,5 +1,5 @@
 import { categoryParams } from '@/tests/mocks'
-import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
+import { CheckCategoryByIdRepository, DeleteCategoryRepository } from '@/domain/contracts/database/repositories/category'
 import { DeleteCategory, deleteCategoryUseCase } from '@/domain/use-cases/category'
 import { FieldNotFoundError } from '@/domain/error'
 
@@ -10,7 +10,7 @@ describe('DeleteCategoryUseCase', () => {
 
   const { id, error } = categoryParams
 
-  const categoryRepository = mock<CheckCategoryByIdRepository>()
+  const categoryRepository = mock<CheckCategoryByIdRepository & DeleteCategoryRepository>()
 
   beforeAll(() => {
     categoryRepository.checkById.mockResolvedValue(true)
@@ -41,5 +41,12 @@ describe('DeleteCategoryUseCase', () => {
     const promise = sut({ id })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call DeleteCategoryRepository with correct value', async () => {
+    await sut({ id })
+
+    expect(categoryRepository.delete).toHaveBeenCalledWith({ id })
+    expect(categoryRepository.delete).toHaveBeenCalledTimes(1)
   })
 })
