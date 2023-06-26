@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers'
-import { HttpResponse } from '@/application/helpers'
+import { HttpResponse, noContent } from '@/application/helpers'
 import { Validator, ValidationBuilder as Builder } from '@/application/validation'
 import { AddCategory } from '@/domain/use-cases/category'
 
@@ -10,7 +10,7 @@ export class AddCategoryController extends Controller {
 
   async perform ({ name }: HttpRequest): Promise<HttpResponse> {
     await this.addCategory({ name })
-    return { data: null, statusCode: 200 }
+    return noContent()
   }
 
   buildValidators ({ name }: HttpRequest): Validator[] {
