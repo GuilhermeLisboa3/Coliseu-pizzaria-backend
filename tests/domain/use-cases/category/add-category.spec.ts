@@ -35,7 +35,7 @@ describe('addCategoryUseCase', () => {
     await expect(promise).rejects.toThrow(new FieldInUseError('name'))
   })
 
-  it('should rethrow if CheckAccountByEmailRepository throws', async () => {
+  it('should rethrow if CheckCategoryByNameRepository throws', async () => {
     categoryRepository.checkByName.mockRejectedValueOnce(error)
 
     const promise = sut({ name })
