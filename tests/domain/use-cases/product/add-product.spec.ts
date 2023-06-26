@@ -122,4 +122,14 @@ describe('AddProductUseCase', () => {
       expect(fileStorage.delete).toHaveBeenCalledTimes(1)
     })
   })
+
+  it('should not call DeleteFile when file does not exists and AddProductRepository throws', async () => {
+    productRepository.create.mockRejectedValueOnce(error)
+
+    const promise = sut({ categoryId: id, name, description, price })
+
+    promise.catch(() => {
+      expect(fileStorage.delete).not.toHaveBeenCalled()
+    })
+  })
 })
