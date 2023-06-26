@@ -51,5 +51,14 @@ describe('Category routes', () => {
       expect(status).toBe(400)
       expect(error).toEqual(new FieldNotFoundError('id').message)
     })
+
+    it('should return 204 on success', async () => {
+      await prisma.category.create({ data: { id, name } })
+      const { status } = await request(app)
+        .delete(`/category/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(204)
+    })
   })
 })
