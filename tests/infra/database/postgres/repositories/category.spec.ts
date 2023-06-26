@@ -4,7 +4,7 @@ import { prisma } from '@/infra/database/postgres/helpers'
 
 describe('CategoryRepository', () => {
   let sut: CategoryRepository
-  const { name } = categoryParams
+  const { id, name } = categoryParams
 
   beforeEach(() => {
     sut = new CategoryRepository()
@@ -31,6 +31,16 @@ describe('CategoryRepository', () => {
       const category = await sut.create({ name })
 
       expect(category).toMatchObject({ name })
+    })
+  })
+
+  describe('checkById()', () => {
+    it('should return true if id already exists', async () => {
+      await prisma.category.create({ data: { id, name } })
+
+      const result = await sut.checkById({ id })
+
+      expect(result).toBe(true)
     })
   })
 })
