@@ -4,11 +4,12 @@ import { Controller } from '@/application/controllers'
 import { RequiredValidation } from '@/application/validation'
 
 describe('AddCategoryController', () => {
-  let sut: AddCategoryController
   const { name } = categoryParams
+  const addAccount = jest.fn()
+  let sut: AddCategoryController
 
   beforeEach(() => {
-    sut = new AddCategoryController()
+    sut = new AddCategoryController(addAccount)
   })
 
   it('should extend Controller', async () => {
@@ -21,5 +22,12 @@ describe('AddCategoryController', () => {
     expect(validators).toEqual([
       new RequiredValidation(name, 'name')
     ])
+  })
+
+  it('should call addAccount with correct values', async () => {
+    await sut.handle({ name })
+
+    expect(addAccount).toHaveBeenCalledWith({ name })
+    expect(addAccount).toHaveBeenCalledTimes(1)
   })
 })
