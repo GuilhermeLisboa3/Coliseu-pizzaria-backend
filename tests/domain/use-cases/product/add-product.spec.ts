@@ -3,6 +3,7 @@ import { CheckProductByNameRepository } from '@/domain/contracts/database/reposi
 import { AddProduct, addProductUseCase } from '@/domain/use-cases/product'
 
 import { mock } from 'jest-mock-extended'
+import { FieldInUseError } from '@/domain/error'
 
 describe('AddProductUseCase', () => {
   const { name } = productParams
@@ -19,5 +20,13 @@ describe('AddProductUseCase', () => {
 
     expect(productRepository.checkByName).toHaveBeenCalledWith({ name })
     expect(productRepository.checkByName).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw FieldInUseError if CheckProductByNameRepository return true', async () => {
+    productRepository.checkByName.mockResolvedValueOnce(true)
+
+    const promise = sut({ name })
+
+    await expect(promise).rejects.toThrow(new FieldInUseError('name'))
   })
 })
