@@ -1,10 +1,10 @@
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
-import { CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
+import { AddProductRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { UUIDGenerator, UploadFile } from '@/domain/contracts/gateways'
 import { FieldInUseError, FieldNotFoundError } from '@/domain/error'
 
 type Setup = (
-  productRepository: CheckProductByNameRepository,
+  productRepository: CheckProductByNameRepository & AddProductRepository,
   categoryRepository: CheckCategoryByIdRepository,
   uuid: UUIDGenerator,
   fileStorage: UploadFile
@@ -19,5 +19,7 @@ export const addProductUseCase: Setup = (productRepository, categoryRepository, 
   const categoryExists = await categoryRepository.checkById({ id: categoryId })
   if (!categoryExists) throw new FieldNotFoundError('categoryId')
   const key = uuid.generate()
-  if (file) await fileStorage.upload({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
+  let picture: string | undefined
+  if (file) picture = await fileStorage.upload({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
+  await productRepository.create({ name, picture, categoryId, description, price })
 }
