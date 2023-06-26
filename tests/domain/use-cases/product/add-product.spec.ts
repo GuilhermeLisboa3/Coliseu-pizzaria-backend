@@ -1,7 +1,7 @@
 import { productParams, categoryParams } from '@/tests/mocks'
 import { CheckProductByNameRepository, AddProductRepository } from '@/domain/contracts/database/repositories/product'
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
-import { UUIDGenerator, UploadFile } from '@/domain/contracts/gateways'
+import { UUIDGenerator, UploadFile, DeleteFile } from '@/domain/contracts/gateways'
 import { AddProduct, addProductUseCase } from '@/domain/use-cases/product'
 
 import { mock } from 'jest-mock-extended'
@@ -15,7 +15,7 @@ describe('AddProductUseCase', () => {
   const productRepository = mock<CheckProductByNameRepository & AddProductRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
   const uuid = mock<UUIDGenerator>()
-  const fileStorage = mock<UploadFile>()
+  const fileStorage = mock<UploadFile & DeleteFile>()
 
   let sut: AddProduct
 
@@ -110,5 +110,16 @@ describe('AddProductUseCase', () => {
 
     expect(productRepository.create).toHaveBeenCalledWith({ name, description, price, picture, categoryId: id })
     expect(productRepository.create).toHaveBeenCalledTimes(1)
+  })
+
+  it('should call DeleteFile when file exists and AddProductRepository throws', async () => {
+    productRepository.create.mockRejectedValueOnce(error)
+
+    const promise = sut(makeParams)
+
+    promise.catch(() => {
+      expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: `${key}.${file.mimeType.split('/')[1]}` })
+      expect(fileStorage.delete).toHaveBeenCalledTimes(1)
+    })
   })
 })
