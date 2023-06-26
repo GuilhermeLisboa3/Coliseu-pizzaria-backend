@@ -6,7 +6,7 @@ import { mock } from 'jest-mock-extended'
 import { FieldInUseError } from '@/domain/error'
 
 describe('AddProductUseCase', () => {
-  const { name } = productParams
+  const { name, error } = productParams
   const productRepository = mock<CheckProductByNameRepository>()
 
   let sut: AddProduct
@@ -28,5 +28,13 @@ describe('AddProductUseCase', () => {
     const promise = sut({ name })
 
     await expect(promise).rejects.toThrow(new FieldInUseError('name'))
+  })
+
+  it('should rethrow if CheckProductByNameRepository throws', async () => {
+    productRepository.checkByName.mockRejectedValueOnce(error)
+
+    const promise = sut({ name })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
