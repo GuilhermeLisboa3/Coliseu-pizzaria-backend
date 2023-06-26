@@ -2,7 +2,7 @@ import { env } from '@/main/config'
 import { categoryParams, accountParams } from '@/tests/mocks'
 import { app } from '@/main/config/app'
 import { prisma } from '@/infra/database/postgres/helpers'
-import { FieldInUseError } from '@/domain/error'
+import { FieldInUseError, FieldNotFoundError } from '@/domain/error'
 
 import request from 'supertest'
 import { sign } from 'jsonwebtoken'
@@ -39,6 +39,17 @@ describe('Category routes', () => {
         .send({ name })
 
       expect(status).toBe(204)
+    })
+  })
+
+  describe('DELETE /category/:id', () => {
+    it('should return 400 if id not exist', async () => {
+      const { status, body: { error } } = await request(app)
+        .delete(`/category/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toEqual(new FieldNotFoundError('id').message)
     })
   })
 })
