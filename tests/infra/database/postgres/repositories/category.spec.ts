@@ -25,4 +25,12 @@ describe('CategoryRepository', () => {
       expect(result).toBe(false)
     })
   })
+
+  describe('create()', () => {
+    it('should return category on success', async () => {
+      const category = await sut.create({ name })
+
+      expect(category).toMatchObject({ name })
+    })
+  })
 })
