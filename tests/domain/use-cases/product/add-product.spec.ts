@@ -4,7 +4,7 @@ import { CheckCategoryByIdRepository } from '@/domain/contracts/database/reposit
 import { AddProduct, addProductUseCase } from '@/domain/use-cases/product'
 
 import { mock } from 'jest-mock-extended'
-import { FieldInUseError } from '@/domain/error'
+import { FieldInUseError, FieldNotFoundError } from '@/domain/error'
 
 describe('AddProductUseCase', () => {
   const { name, error } = productParams
@@ -15,6 +15,10 @@ describe('AddProductUseCase', () => {
   const categoryRepository = mock<CheckCategoryByIdRepository>()
 
   let sut: AddProduct
+
+  beforeAll(() => {
+    categoryRepository.checkById.mockResolvedValue(true)
+  })
 
   beforeEach(() => {
     sut = addProductUseCase(productRepository, categoryRepository)
@@ -48,5 +52,13 @@ describe('AddProductUseCase', () => {
 
     expect(categoryRepository.checkById).toHaveBeenCalledWith({ id })
     expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw FieldNotFoundError if CheckCategoryByIdRepository return true', async () => {
+    categoryRepository.checkById.mockResolvedValueOnce(false)
+
+    const promise = sut(makeParams)
+
+    await expect(promise).rejects.toThrow(new FieldNotFoundError('categoryId'))
   })
 })
