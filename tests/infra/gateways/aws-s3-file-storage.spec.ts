@@ -60,5 +60,11 @@ describe('AwsS3FileStorage', () => {
 
       await expect(promise).rejects.toThrow(error)
     })
+
+    it('should return url on success', async () => {
+      const imageUrl = await sut.upload({ fileName, file })
+
+      expect(imageUrl).toBe(`https://${bucket}.s3.amazonaws.com/${fileName}`)
+    })
   })
 })
