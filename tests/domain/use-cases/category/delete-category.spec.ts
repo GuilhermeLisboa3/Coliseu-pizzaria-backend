@@ -8,7 +8,7 @@ import { mock } from 'jest-mock-extended'
 describe('DeleteCategoryUseCase', () => {
   let sut: DeleteCategory
 
-  const { id } = categoryParams
+  const { id, error } = categoryParams
 
   const categoryRepository = mock<CheckCategoryByIdRepository>()
 
@@ -33,5 +33,13 @@ describe('DeleteCategoryUseCase', () => {
     const promise = sut({ id })
 
     await expect(promise).rejects.toThrow(new FieldNotFoundError('id'))
+  })
+
+  it('should rethrow if CheckCategoryByIdRepository throws', async () => {
+    categoryRepository.checkById.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
