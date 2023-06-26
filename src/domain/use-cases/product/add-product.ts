@@ -25,5 +25,6 @@ export const addProductUseCase: Setup = (productRepository, categoryRepository, 
     await productRepository.create({ name, picture, categoryId, description, price })
   } catch (error) {
     if (file) await fileStorage.delete({ fileName: `${key}.${file.mimeType.split('/')[1]}` })
+    throw error
   }
 }
