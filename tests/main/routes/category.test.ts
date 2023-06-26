@@ -31,5 +31,14 @@ describe('Category routes', () => {
       expect(status).toBe(400)
       expect(error).toEqual(new FieldInUseError('name').message)
     })
+
+    it('should return 204 on success', async () => {
+      const { status } = await request(app)
+        .post('/category')
+        .set({ authorization: `Bearer: ${token}` })
+        .send({ name })
+
+      expect(status).toBe(204)
+    })
   })
 })
