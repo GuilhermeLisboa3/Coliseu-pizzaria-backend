@@ -49,4 +49,14 @@ describe('CategoryRepository', () => {
       expect(result).toBe(false)
     })
   })
+
+  describe('delete()', () => {
+    it('should delete category on success', async () => {
+      await prisma.category.create({ data: { id, name } })
+
+      await sut.delete({ id })
+
+      expect(await prisma.category.findFirst({ where: { id } })).toBeNull()
+    })
+  })
 })
