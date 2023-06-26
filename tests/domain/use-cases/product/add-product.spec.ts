@@ -1,6 +1,7 @@
 import { productParams, categoryParams } from '@/tests/mocks'
 import { CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
+import { UUIDGenerator } from '@/domain/contracts/gateways'
 import { AddProduct, addProductUseCase } from '@/domain/use-cases/product'
 
 import { mock } from 'jest-mock-extended'
@@ -13,6 +14,7 @@ describe('AddProductUseCase', () => {
 
   const productRepository = mock<CheckProductByNameRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
+  const uuid = mock<UUIDGenerator>()
 
   let sut: AddProduct
 
@@ -21,7 +23,7 @@ describe('AddProductUseCase', () => {
   })
 
   beforeEach(() => {
-    sut = addProductUseCase(productRepository, categoryRepository)
+    sut = addProductUseCase(productRepository, categoryRepository, uuid)
   })
 
   it('should call CheckProductByNameRepository with correct value', async () => {
@@ -68,5 +70,12 @@ describe('AddProductUseCase', () => {
     const promise = sut(makeParams)
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call UUIDGenerator', async () => {
+    await sut(makeParams)
+
+    expect(uuid.generate).toHaveBeenCalled()
+    expect(uuid.generate).toHaveBeenCalledTimes(1)
   })
 })
