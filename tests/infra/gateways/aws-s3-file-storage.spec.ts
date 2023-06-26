@@ -67,4 +67,22 @@ describe('AwsS3FileStorage', () => {
       expect(imageUrl).toBe(`https://${bucket}.s3.amazonaws.com/${fileName}`)
     })
   })
+
+  describe('delete()', () => {
+    const deleteObjectPromiseSpy: jest.Mock = jest.fn()
+    const deleteObjectSpy: jest.Mock = jest.fn()
+
+    beforeAll(() => {
+      deleteObjectSpy.mockImplementation(() => ({ promise: deleteObjectPromiseSpy }))
+      jest.mocked(S3).mockImplementation(jest.fn().mockImplementation(() => ({ deleteObject: deleteObjectSpy })))
+    })
+
+    it('should call deleteObject with correct values', async () => {
+      await sut.delete({ fileName })
+
+      expect(deleteObjectSpy).toHaveBeenCalledWith({ Bucket: bucket, Key: fileName })
+      expect(deleteObjectSpy).toHaveBeenCalledTimes(1)
+      expect(deleteObjectPromiseSpy).toHaveBeenCalledTimes(1)
+    })
+  })
 })
