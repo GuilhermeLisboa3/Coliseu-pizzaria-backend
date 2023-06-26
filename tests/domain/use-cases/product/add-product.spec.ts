@@ -132,4 +132,12 @@ describe('AddProductUseCase', () => {
       expect(fileStorage.delete).not.toHaveBeenCalled()
     })
   })
+
+  it('should rethrow if AddProductRepository throws', async () => {
+    productRepository.create.mockRejectedValueOnce(error)
+
+    const promise = sut(makeParams)
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
