@@ -49,4 +49,12 @@ describe('DeleteCategoryUseCase', () => {
     expect(categoryRepository.delete).toHaveBeenCalledWith({ id })
     expect(categoryRepository.delete).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if DeleteCategoryRepository throws', async () => {
+    categoryRepository.delete.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
