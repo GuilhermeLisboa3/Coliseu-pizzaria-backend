@@ -1,29 +1,31 @@
 import { productParams, categoryParams } from '@/tests/mocks'
 import { CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
-import { UUIDGenerator } from '@/domain/contracts/gateways'
+import { UUIDGenerator, UploadFile } from '@/domain/contracts/gateways'
 import { AddProduct, addProductUseCase } from '@/domain/use-cases/product'
 
 import { mock } from 'jest-mock-extended'
 import { FieldInUseError, FieldNotFoundError } from '@/domain/error'
 
 describe('AddProductUseCase', () => {
-  const { name, error } = productParams
+  const { name, error, key, file, description, price } = productParams
   const { id } = categoryParams
-  const makeParams = { name, categoryId: id }
+  const makeParams = { name, categoryId: id, description, price, file }
 
   const productRepository = mock<CheckProductByNameRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
   const uuid = mock<UUIDGenerator>()
+  const fileStorage = mock<UploadFile>()
 
   let sut: AddProduct
 
   beforeAll(() => {
     categoryRepository.checkById.mockResolvedValue(true)
+    uuid.generate.mockReturnValue(key)
   })
 
   beforeEach(() => {
-    sut = addProductUseCase(productRepository, categoryRepository, uuid)
+    sut = addProductUseCase(productRepository, categoryRepository, uuid, fileStorage)
   })
 
   it('should call CheckProductByNameRepository with correct value', async () => {
@@ -85,5 +87,12 @@ describe('AddProductUseCase', () => {
     const promise = sut(makeParams)
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call UploadFile with correct values', async () => {
+    await sut(makeParams)
+
+    expect(fileStorage.upload).toHaveBeenCalledWith({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
+    expect(fileStorage.upload).toHaveBeenCalledTimes(1)
   })
 })
