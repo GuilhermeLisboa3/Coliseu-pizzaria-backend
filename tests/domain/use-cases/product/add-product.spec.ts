@@ -61,4 +61,12 @@ describe('AddProductUseCase', () => {
 
     await expect(promise).rejects.toThrow(new FieldNotFoundError('categoryId'))
   })
+
+  it('should rethrow if CheckCategoryByIdRepository throws', async () => {
+    categoryRepository.checkById.mockRejectedValueOnce(error)
+
+    const promise = sut(makeParams)
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
