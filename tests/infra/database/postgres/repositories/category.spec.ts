@@ -42,5 +42,11 @@ describe('CategoryRepository', () => {
 
       expect(result).toBe(true)
     })
+
+    it('should return false if id already not exist', async () => {
+      const result = await sut.checkById({ id })
+
+      expect(result).toBe(false)
+    })
   })
 })
