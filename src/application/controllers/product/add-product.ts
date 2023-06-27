@@ -1,11 +1,15 @@
 import { Controller } from '@/application/controllers'
 import { HttpResponse } from '@/application/helpers'
 import { Validator, ValidationBuilder as Builder } from '@/application/validation'
+import { AddProduct } from '@/domain/use-cases/product'
 
 type HttpRequest = { categoryId: string, name: string, description: string, price: number, file?: { buffer: Buffer, mimeType: string } }
 
 export class AddProductController extends Controller {
+  constructor (private readonly addProduct: AddProduct) { super() }
+
   async perform ({ categoryId, description, name, price, file }: HttpRequest): Promise<HttpResponse> {
+    await this.addProduct({ categoryId, description, name, price, file })
     return { statusCode: 200, data: null }
   }
 
