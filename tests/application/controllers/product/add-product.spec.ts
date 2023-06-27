@@ -53,4 +53,10 @@ describe('AddProductController', () => {
     expect(statusCode).toBe(400)
     expect(data).toEqual(new FieldNotFoundError('categoryId'))
   })
+
+  it('should return noContent on success', async () => {
+    const { statusCode } = await sut.handle(makeParams)
+
+    expect(statusCode).toBe(204)
+  })
 })
