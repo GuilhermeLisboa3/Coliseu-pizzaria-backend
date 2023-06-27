@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/main",
-    "dev": "ts-node-dev --respawn --transpile-only src/main/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only --clear -r dotenv/config --inspect=0.0.0.0:9229 src/main/server.ts",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
     "lint": "npx lint .",
     "lint:fix": "npm run lint -- --fix",
@@ -58,6 +58,7 @@
     "aws-sdk": "^2.1405.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "module-alias": "^2.2.3",
