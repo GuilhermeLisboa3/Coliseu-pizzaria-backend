@@ -2,7 +2,7 @@ import { productParams } from '@/tests/mocks'
 import { AddProductController } from '@/application/controllers/product'
 import { Controller } from '@/application/controllers'
 import { AllowedMimeTypesValidation, MaxFileSizeValidation, RequiredValidation } from '@/application/validation'
-import { FieldInUseError } from '@/domain/error'
+import { FieldInUseError, FieldNotFoundError } from '@/domain/error'
 
 describe('AddProductController', () => {
   const { name, description, price, file, id } = productParams
@@ -44,5 +44,13 @@ describe('AddProductController', () => {
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new FieldInUseError('name'))
+  })
+
+  it('should return badRequest if addProduct return FieldNotFoundError', async () => {
+    addProduct.mockRejectedValueOnce(new FieldNotFoundError('categoryId'))
+    const { statusCode, data } = await sut.handle(makeParams)
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new FieldNotFoundError('categoryId'))
   })
 })
