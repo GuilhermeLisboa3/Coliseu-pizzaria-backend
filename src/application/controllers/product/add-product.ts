@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers'
-import { HttpResponse } from '@/application/helpers'
+import { HttpResponse, noContent } from '@/application/helpers'
 import { Validator, ValidationBuilder as Builder } from '@/application/validation'
 import { AddProduct } from '@/domain/use-cases/product'
 
@@ -10,7 +10,7 @@ export class AddProductController extends Controller {
 
   async perform ({ categoryId, description, name, price, file }: HttpRequest): Promise<HttpResponse> {
     await this.addProduct({ categoryId, description, name, price, file })
-    return { statusCode: 200, data: null }
+    return noContent()
   }
 
   buildValidators ({ name, categoryId, description, price, file }: HttpRequest): Validator[] {
