@@ -6,10 +6,11 @@ import { AllowedMimeTypesValidation, MaxFileSizeValidation, RequiredValidation }
 describe('AddProductController', () => {
   const { name, description, price, file, id } = productParams
   const makeParams = { categoryId: id, name, description, price, file }
+  const addProduct = jest.fn()
   let sut: AddProductController
 
   beforeEach(() => {
-    sut = new AddProductController()
+    sut = new AddProductController(addProduct)
   })
 
   it('should extend Controller', async () => {
@@ -27,5 +28,12 @@ describe('AddProductController', () => {
       new AllowedMimeTypesValidation(['png', 'jpg'], file.mimeType),
       new MaxFileSizeValidation(10, file.buffer)
     ])
+  })
+
+  it('should call addProduct with correct values', async () => {
+    await sut.handle(makeParams)
+
+    expect(addProduct).toHaveBeenCalledWith(makeParams)
+    expect(addProduct).toHaveBeenCalledTimes(1)
   })
 })
