@@ -2,7 +2,7 @@ import { env } from '@/main/config'
 import { categoryParams, accountParams, productParams } from '@/tests/mocks'
 import { app } from '@/main/config/app'
 import { prisma } from '@/infra/database/postgres/helpers'
-import { FieldInUseError } from '@/domain/error'
+import { FieldInUseError, FieldNotFoundError } from '@/domain/error'
 
 import request from 'supertest'
 import { sign } from 'jsonwebtoken'
@@ -32,6 +32,16 @@ describe('Product routes', () => {
 
       expect(status).toBe(400)
       expect(error).toEqual(new FieldInUseError('name').message)
+    })
+
+    it('should return 400 if categoryId not exist', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/product')
+        .set({ authorization: `Bearer: ${token}` })
+        .send({ categoryId: '2', name, description, price })
+
+      expect(status).toBe(400)
+      expect(error).toEqual(new FieldNotFoundError('categoryId').message)
     })
   })
 })
