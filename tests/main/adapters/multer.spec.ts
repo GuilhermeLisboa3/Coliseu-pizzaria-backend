@@ -76,4 +76,10 @@ describe('MulterAdapter', () => {
 
     expect(req.locals).toEqual({ [key]: value })
   })
+
+  it('should add file to req.locals', () => {
+    sut(req, res, next)
+
+    expect(req.locals).toEqual({ [key]: value, file: { buffer: req.file?.buffer, mimeType: req.file?.mimetype } })
+  })
 })
