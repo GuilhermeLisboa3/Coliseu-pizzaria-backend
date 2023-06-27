@@ -68,4 +68,12 @@ describe('MulterAdapter', () => {
     expect(res.json).toHaveBeenCalledWith({ error: new ServerError(error).message })
     expect(res.json).toHaveBeenCalledTimes(1)
   })
+
+  it('should not add file to req.locals if req is empty', () => {
+    uploadSpy.mockImplementationOnce((req, res, next) => { next() })
+
+    sut(req, res, next)
+
+    expect(req.locals).toEqual({ [key]: value })
+  })
 })
