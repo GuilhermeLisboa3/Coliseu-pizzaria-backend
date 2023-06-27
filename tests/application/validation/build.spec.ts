@@ -1,8 +1,10 @@
-import { RequiredValidation, ValidationBuilder as Builder, EmailValidation, MinSizeValidation } from '@/application/validation'
+import { productParams } from '@/tests/mocks'
+import { RequiredValidation, ValidationBuilder as Builder, EmailValidation, MinSizeValidation, AllowedMimeTypesValidation, MaxFileSizeValidation } from '@/application/validation'
 
 import faker from 'faker'
 
 describe('ValidationBuilder', () => {
+  const { file } = productParams
   let value: string
   let fieldName: string
 
@@ -27,5 +29,11 @@ describe('ValidationBuilder', () => {
     const validators = Builder.of(value, fieldName).min(5).build()
 
     expect(validators).toEqual([new MinSizeValidation(value, 5)])
+  })
+
+  it('should return a Image validation if image() is call', () => {
+    const validators = Builder.of(file, fieldName).image({ AllowedMimeTypes: ['png'], maxSizeInMb: 5 }).build()
+
+    expect(validators).toEqual([new AllowedMimeTypesValidation(['png'], file.mimeType), new MaxFileSizeValidation(5, file.buffer)])
   })
 })
