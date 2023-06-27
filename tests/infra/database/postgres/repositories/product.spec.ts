@@ -26,4 +26,12 @@ describe('ProductRepository', () => {
       expect(result).toBe(false)
     })
   })
+
+  describe('create()', () => {
+    it('should create a account on success', async () => {
+      await sut.create({ description, name, picture, price, categoryId: id })
+
+      expect(await prisma.product.findFirst({ where: { name } })).toBeTruthy()
+    })
+  })
 })
