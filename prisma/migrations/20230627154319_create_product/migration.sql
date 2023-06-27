@@ -6,7 +6,7 @@ CREATE TABLE "products" (
     "description" TEXT NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
     "available" BOOLEAN NOT NULL,
-    "picture" TEXT NOT NULL,
+    "picture" TEXT,
     "category_id" TEXT NOT NULL,
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
