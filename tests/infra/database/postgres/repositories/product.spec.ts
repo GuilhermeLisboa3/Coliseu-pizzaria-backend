@@ -50,4 +50,14 @@ describe('ProductRepository', () => {
       expect(product).toBeNull()
     })
   })
+
+  describe('update()', () => {
+    it('should return undefined on success', async () => {
+      await prisma.product.create({ data: { id, available, description, name, picture, price, category_id: id } })
+
+      await sut.update({ id, name: 'any_name' })
+
+      expect(await prisma.product.findFirst({ where: { name: 'any_name' } })).toBeTruthy()
+    })
+  })
 })
