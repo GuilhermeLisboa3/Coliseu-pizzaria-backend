@@ -159,7 +159,7 @@ describe('updateProductUseCase', () => {
 
     promise.catch(() => {
       expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: `${key}.${file.mimeType.split('/')[1]}` })
-      expect(fileStorage.delete).toHaveBeenCalledTimes(1)
+      expect(fileStorage.delete).toHaveBeenCalledTimes(2)
     })
   })
 
@@ -171,5 +171,13 @@ describe('updateProductUseCase', () => {
     promise.catch(() => {
       expect(fileStorage.delete).not.toHaveBeenCalled()
     })
+  })
+
+  it('should rethrow if UpdateProductRepository throws', async () => {
+    productRepository.update.mockRejectedValueOnce(error)
+
+    const promise = sut(makeParams)
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
