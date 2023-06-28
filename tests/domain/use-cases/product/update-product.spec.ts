@@ -151,4 +151,15 @@ describe('updateProductUseCase', () => {
     expect(productRepository.update).toHaveBeenCalledWith({ id, name, description, price, categoryId: id, available, picture })
     expect(productRepository.update).toHaveBeenCalledTimes(1)
   })
+
+  it('should call DeleteFile when file exists and AddProductRepository throws', async () => {
+    productRepository.update.mockRejectedValueOnce(error)
+
+    const promise = sut(makeParams)
+
+    promise.catch(() => {
+      expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: `${key}.${file.mimeType.split('/')[1]}` })
+      expect(fileStorage.delete).toHaveBeenCalledTimes(1)
+    })
+  })
 })
