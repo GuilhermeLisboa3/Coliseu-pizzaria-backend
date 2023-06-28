@@ -2,10 +2,10 @@ import { productParams, categoryParams } from '@/tests/mocks'
 import { LoadProductRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
+import { UUIDGenerator, DeleteFile } from '@/domain/contracts/gateways'
 
 import { mock } from 'jest-mock-extended'
 import { FieldNotFoundError, FieldInUseError } from '@/domain/error'
-import { UUIDGenerator } from '@/domain/contracts/gateways'
 
 describe('updateProductUseCase', () => {
   const { name, file, description, price, available, picture, error } = productParams
@@ -15,6 +15,7 @@ describe('updateProductUseCase', () => {
   const productRepository = mock<LoadProductRepository & CheckProductByNameRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
   const uuid = mock<UUIDGenerator>()
+  const fileStorage = mock<DeleteFile>()
 
   let sut: UpdateProduct
 
@@ -25,7 +26,7 @@ describe('updateProductUseCase', () => {
   })
 
   beforeEach(() => {
-    sut = updateProductUseCase(productRepository, categoryRepository, uuid)
+    sut = updateProductUseCase(productRepository, categoryRepository, uuid, fileStorage)
   })
 
   it('should call LoadProductRepository with correct id', async () => {
@@ -110,5 +111,12 @@ describe('updateProductUseCase', () => {
     const promise = sut(makeParams)
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call DeleteFile if product has picture', async () => {
+    await sut(makeParams)
+
+    expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: picture })
+    expect(fileStorage.delete).toHaveBeenCalledTimes(1)
   })
 })
