@@ -119,4 +119,12 @@ describe('updateProductUseCase', () => {
     expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: picture })
     expect(fileStorage.delete).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if DeleteFile throws', async () => {
+    fileStorage.delete.mockRejectedValueOnce(error)
+
+    const promise = sut(makeParams)
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
