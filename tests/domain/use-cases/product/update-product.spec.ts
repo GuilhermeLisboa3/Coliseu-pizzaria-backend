@@ -3,7 +3,7 @@ import { LoadProductRepository, CheckProductByNameRepository } from '@/domain/co
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 
 import { mock } from 'jest-mock-extended'
-import { FieldNotFoundError } from '@/domain/error'
+import { FieldNotFoundError, FieldInUseError } from '@/domain/error'
 
 describe('updateProductUseCase', () => {
   const { name, file, description, price, available, picture, error } = productParams
@@ -16,6 +16,7 @@ describe('updateProductUseCase', () => {
 
   beforeAll(() => {
     productRepository.load.mockResolvedValue({ id, name, description, price, categoryId: id, available, picture })
+    productRepository.checkByName.mockResolvedValue(false)
   })
 
   beforeEach(() => {
@@ -50,5 +51,13 @@ describe('updateProductUseCase', () => {
 
     expect(productRepository.checkByName).toHaveBeenCalledWith({ name })
     expect(productRepository.checkByName).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw FieldInUseError if CheckProductByNameRepository return true', async () => {
+    productRepository.checkByName.mockResolvedValueOnce(true)
+
+    const promise = sut(makeParams)
+
+    await expect(promise).rejects.toThrow(new FieldInUseError('name'))
   })
 })
