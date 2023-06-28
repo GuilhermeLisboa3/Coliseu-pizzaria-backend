@@ -1,5 +1,6 @@
 import { productParams, categoryParams } from '@/tests/mocks'
 import { LoadProductRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
+import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 
 import { mock } from 'jest-mock-extended'
@@ -11,6 +12,7 @@ describe('updateProductUseCase', () => {
   const makeParams = { id, name, categoryId: id, description, price, file }
 
   const productRepository = mock<LoadProductRepository & CheckProductByNameRepository>()
+  const categoryRepository = mock<CheckCategoryByIdRepository>()
 
   let sut: UpdateProduct
 
@@ -20,7 +22,7 @@ describe('updateProductUseCase', () => {
   })
 
   beforeEach(() => {
-    sut = updateProductUseCase(productRepository)
+    sut = updateProductUseCase(productRepository, categoryRepository)
   })
 
   it('should call LoadProductRepository with correct id', async () => {
@@ -67,5 +69,12 @@ describe('updateProductUseCase', () => {
     const promise = sut(makeParams)
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call CheckCategoryByIdRepository with correct value', async () => {
+    await sut(makeParams)
+
+    expect(categoryRepository.checkById).toHaveBeenCalledWith({ id })
+    expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
   })
 })
