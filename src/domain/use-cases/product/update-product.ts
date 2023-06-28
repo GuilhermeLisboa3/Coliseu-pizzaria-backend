@@ -1,10 +1,10 @@
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
-import { LoadProductRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
+import { LoadProductRepository, CheckProductByNameRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
 import { DeleteFile, UUIDGenerator, UploadFile } from '@/domain/contracts/gateways'
 import { FieldInUseError, FieldNotFoundError } from '@/domain/error'
 
 type Setup = (
-  productRepository: LoadProductRepository & CheckProductByNameRepository,
+  productRepository: LoadProductRepository & CheckProductByNameRepository & UpdateProductRepository,
   categoryRepository: CheckCategoryByIdRepository,
   uuid: UUIDGenerator,
   fileStorage: DeleteFile & UploadFile
@@ -24,9 +24,11 @@ export const updateProductUseCase: Setup = (productRepository, categoryRepositor
     const category = await categoryRepository.checkById({ id: categoryId })
     if (!category) throw new FieldNotFoundError('categoryId')
   }
+  let picture: string | undefined
   const key = uuid.generate()
   if (file) {
     if (product.picture) await fileStorage.delete({ fileName: product.picture })
-    await fileStorage.upload({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
+    picture = await fileStorage.upload({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
   }
+  await productRepository.update({ name, categoryId, description, price, picture, id, available })
 }
