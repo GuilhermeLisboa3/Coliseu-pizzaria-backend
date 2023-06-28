@@ -43,5 +43,11 @@ describe('ProductRepository', () => {
 
       expect(product).toEqual({ id, available, description, name, picture, price, categoryId: id })
     })
+
+    it('should return null if product already not exist', async () => {
+      const product = await sut.load({ id })
+
+      expect(product).toBeNull()
+    })
   })
 })
