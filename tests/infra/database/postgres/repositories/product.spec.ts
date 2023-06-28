@@ -34,4 +34,14 @@ describe('ProductRepository', () => {
       expect(await prisma.product.findFirst({ where: { name } })).toBeTruthy()
     })
   })
+
+  describe('load()', () => {
+    it('should return product on success', async () => {
+      await prisma.product.create({ data: { id, available, description, name, picture, price, category_id: id } })
+
+      const product = await sut.load({ id })
+
+      expect(product).toEqual({ id, available, description, name, picture, price, categoryId: id })
+    })
+  })
 })
