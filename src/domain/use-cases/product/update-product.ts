@@ -1,4 +1,5 @@
 import { LoadProductRepository } from '@/domain/contracts/database/repositories/product'
+import { FieldNotFoundError } from '@/domain/error'
 
 type Setup = (
   productRepository: LoadProductRepository
@@ -8,5 +9,6 @@ type Output = void
 export type UpdateProduct = (input: Input) => Promise<Output>
 
 export const updateProductUseCase: Setup = (productRepository) => async ({ name, categoryId, description, price, file, id, available }) => {
-  await productRepository.load({ id })
+  const product = await productRepository.load({ id })
+  if (!product) throw new FieldNotFoundError('id')
 }

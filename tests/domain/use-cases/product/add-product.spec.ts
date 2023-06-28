@@ -59,7 +59,7 @@ describe('AddProductUseCase', () => {
     expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
   })
 
-  it('should throw FieldNotFoundError if CheckCategoryByIdRepository return true', async () => {
+  it('should throw FieldNotFoundError if CheckCategoryByIdRepository return false', async () => {
     categoryRepository.checkById.mockResolvedValueOnce(false)
 
     const promise = sut(makeParams)
