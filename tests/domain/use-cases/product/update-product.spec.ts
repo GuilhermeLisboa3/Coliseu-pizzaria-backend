@@ -5,6 +5,7 @@ import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 
 import { mock } from 'jest-mock-extended'
 import { FieldNotFoundError, FieldInUseError } from '@/domain/error'
+import { UUIDGenerator } from '@/domain/contracts/gateways'
 
 describe('updateProductUseCase', () => {
   const { name, file, description, price, available, picture, error } = productParams
@@ -13,6 +14,7 @@ describe('updateProductUseCase', () => {
 
   const productRepository = mock<LoadProductRepository & CheckProductByNameRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
+  const uuid = mock<UUIDGenerator>()
 
   let sut: UpdateProduct
 
@@ -23,7 +25,7 @@ describe('updateProductUseCase', () => {
   })
 
   beforeEach(() => {
-    sut = updateProductUseCase(productRepository, categoryRepository)
+    sut = updateProductUseCase(productRepository, categoryRepository, uuid)
   })
 
   it('should call LoadProductRepository with correct id', async () => {
@@ -93,5 +95,12 @@ describe('updateProductUseCase', () => {
     const promise = sut(makeParams)
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call UUIDGenerator', async () => {
+    await sut(makeParams)
+
+    expect(uuid.generate).toHaveBeenCalled()
+    expect(uuid.generate).toHaveBeenCalledTimes(1)
   })
 })
