@@ -1,7 +1,7 @@
-import { CheckProductByNameRepository, AddProductRepository, LoadProductRepository } from '@/domain/contracts/database/repositories/product'
+import { CheckProductByNameRepository, AddProductRepository, LoadProductRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
 import { prisma, PrismaoHelper } from '@/infra/database/postgres/helpers'
 
-export class ProductRepository implements CheckProductByNameRepository, AddProductRepository, LoadProductRepository {
+export class ProductRepository implements CheckProductByNameRepository, AddProductRepository, LoadProductRepository, UpdateProductRepository {
   async checkByName ({ name }: CheckProductByNameRepository.Input): Promise<CheckProductByNameRepository.Output> {
     const isValid = await prisma.product.findFirst({ where: { name } })
 
@@ -19,5 +19,12 @@ export class ProductRepository implements CheckProductByNameRepository, AddProdu
     })
     if (product) return PrismaoHelper.productMap(product)
     return null
+  }
+
+  async update ({ name, categoryId, description, price, picture, id, available }: UpdateProductRepository.Input): Promise<UpdateProductRepository.Output> {
+    await prisma.product.update({
+      where: { id },
+      data: { name, category_id: categoryId, description, price, picture, id, available }
+    })
   }
 }
