@@ -2,20 +2,20 @@ import { productParams, categoryParams } from '@/tests/mocks'
 import { LoadProductRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
-import { UUIDGenerator, DeleteFile } from '@/domain/contracts/gateways'
+import { UUIDGenerator, DeleteFile, UploadFile } from '@/domain/contracts/gateways'
 
 import { mock } from 'jest-mock-extended'
 import { FieldNotFoundError, FieldInUseError } from '@/domain/error'
 
 describe('updateProductUseCase', () => {
-  const { name, file, description, price, available, picture, error } = productParams
+  const { name, file, description, price, available, picture, error, key } = productParams
   const { id } = categoryParams
   const makeParams = { id, name, categoryId: id, description, price, file }
 
   const productRepository = mock<LoadProductRepository & CheckProductByNameRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
   const uuid = mock<UUIDGenerator>()
-  const fileStorage = mock<DeleteFile>()
+  const fileStorage = mock<DeleteFile & UploadFile>()
 
   let sut: UpdateProduct
 
@@ -23,6 +23,7 @@ describe('updateProductUseCase', () => {
     productRepository.load.mockResolvedValue({ id, name, description, price, categoryId: id, available, picture })
     productRepository.checkByName.mockResolvedValue(false)
     categoryRepository.checkById.mockResolvedValue(true)
+    uuid.generate.mockReturnValue(key)
   })
 
   beforeEach(() => {
@@ -126,5 +127,12 @@ describe('updateProductUseCase', () => {
     const promise = sut(makeParams)
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call UploadFile with correct values', async () => {
+    await sut(makeParams)
+
+    expect(fileStorage.upload).toHaveBeenCalledWith({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
+    expect(fileStorage.upload).toHaveBeenCalledTimes(1)
   })
 })
