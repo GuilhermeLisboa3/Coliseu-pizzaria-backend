@@ -1,5 +1,5 @@
 import { LoadProductRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
-import { FieldNotFoundError } from '@/domain/error'
+import { FieldInUseError, FieldNotFoundError } from '@/domain/error'
 
 type Setup = (
   productRepository: LoadProductRepository & CheckProductByNameRepository
@@ -12,6 +12,7 @@ export const updateProductUseCase: Setup = (productRepository) => async ({ name,
   const product = await productRepository.load({ id })
   if (!product) throw new FieldNotFoundError('id')
   if (name) {
-    await productRepository.checkByName({ name })
+    const nameExists = await productRepository.checkByName({ name })
+    if (nameExists) throw new FieldInUseError('name')
   }
 }
