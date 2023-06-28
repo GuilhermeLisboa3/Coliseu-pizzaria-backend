@@ -1,5 +1,5 @@
 import { productParams, categoryParams } from '@/tests/mocks'
-import { LoadProductRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
+import { LoadProductRepository, CheckProductByNameRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 import { UUIDGenerator, DeleteFile, UploadFile } from '@/domain/contracts/gateways'
@@ -10,9 +10,9 @@ import { FieldNotFoundError, FieldInUseError } from '@/domain/error'
 describe('updateProductUseCase', () => {
   const { name, file, description, price, available, picture, error, key } = productParams
   const { id } = categoryParams
-  const makeParams = { id, name, categoryId: id, description, price, file }
+  const makeParams = { id, name, categoryId: id, description, price, file, available }
 
-  const productRepository = mock<LoadProductRepository & CheckProductByNameRepository>()
+  const productRepository = mock<LoadProductRepository & CheckProductByNameRepository & UpdateProductRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
   const uuid = mock<UUIDGenerator>()
   const fileStorage = mock<DeleteFile & UploadFile>()
@@ -24,6 +24,7 @@ describe('updateProductUseCase', () => {
     productRepository.checkByName.mockResolvedValue(false)
     categoryRepository.checkById.mockResolvedValue(true)
     uuid.generate.mockReturnValue(key)
+    fileStorage.upload.mockResolvedValue(picture)
   })
 
   beforeEach(() => {
@@ -142,5 +143,12 @@ describe('updateProductUseCase', () => {
     const promise = sut(makeParams)
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call UpdateProductRepository with correct values', async () => {
+    await sut(makeParams)
+
+    expect(productRepository.update).toHaveBeenCalledWith({ id, name, description, price, categoryId: id, available, picture })
+    expect(productRepository.update).toHaveBeenCalledTimes(1)
   })
 })
