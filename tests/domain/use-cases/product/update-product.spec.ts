@@ -19,6 +19,7 @@ describe('updateProductUseCase', () => {
   beforeAll(() => {
     productRepository.load.mockResolvedValue({ id, name, description, price, categoryId: id, available, picture })
     productRepository.checkByName.mockResolvedValue(false)
+    categoryRepository.checkById.mockResolvedValue(true)
   })
 
   beforeEach(() => {
@@ -76,5 +77,13 @@ describe('updateProductUseCase', () => {
 
     expect(categoryRepository.checkById).toHaveBeenCalledWith({ id })
     expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw FieldNotFoundError if CheckCategoryByIdRepository return false', async () => {
+    categoryRepository.checkById.mockResolvedValueOnce(false)
+
+    const promise = sut(makeParams)
+
+    await expect(promise).rejects.toThrow(new FieldNotFoundError('categoryId'))
   })
 })
