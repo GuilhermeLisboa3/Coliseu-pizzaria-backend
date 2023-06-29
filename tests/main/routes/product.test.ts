@@ -53,4 +53,17 @@ describe('Product routes', () => {
       expect(status).toBe(204)
     })
   })
+
+  describe('PUT /product/:id', () => {
+    it('should return 400 if name already exists', async () => {
+      await prisma.product.create({ data: { id, name, description, picture, price, available, category_id: id } })
+      const { status, body: { error } } = await request(app)
+        .put(`/product/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+        .send({ categoryId: id, name, description, price })
+
+      expect(status).toBe(400)
+      expect(error).toEqual(new FieldInUseError('name').message)
+    })
+  })
 })
