@@ -96,5 +96,14 @@ describe('Product routes', () => {
       expect(status).toBe(400)
       expect(error).toEqual(new FieldNotFoundError('id').message)
     })
+
+    it('should return 204 on success', async () => {
+      await prisma.product.create({ data: { id, name, description, picture, price, available, category_id: id } })
+      const { status } = await request(app)
+        .delete(`/product/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(204)
+    })
   })
 })
