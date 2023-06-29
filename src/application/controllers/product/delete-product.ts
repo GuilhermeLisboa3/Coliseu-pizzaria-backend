@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers'
-import { HttpResponse } from '@/application/helpers'
+import { HttpResponse, noContent } from '@/application/helpers'
 import { DeleteProduct } from '@/domain/use-cases/product'
 
 type HttpRequest = { id: string }
@@ -9,6 +9,6 @@ export class DeleteProductController extends Controller {
 
   async perform ({ id }: HttpRequest): Promise<HttpResponse> {
     await this.deleteProduct({ id })
-    return { statusCode: 200, data: null }
+    return noContent()
   }
 }
