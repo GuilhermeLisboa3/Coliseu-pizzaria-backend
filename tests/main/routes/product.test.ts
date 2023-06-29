@@ -86,4 +86,15 @@ describe('Product routes', () => {
       expect(status).toBe(204)
     })
   })
+
+  describe('DELETE /product/:id', () => {
+    it('should return 400 if product not exists', async () => {
+      const { status, body: { error } } = await request(app)
+        .delete(`/product/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toEqual(new FieldNotFoundError('id').message)
+    })
+  })
 })
