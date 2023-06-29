@@ -2,6 +2,7 @@ import { productParams } from '@/tests/mocks'
 import { UpdateProductController } from '@/application/controllers/product'
 import { Controller } from '@/application/controllers'
 import { AllowedMimeTypesValidation, MaxFileSizeValidation, RequiredValidation } from '@/application/validation'
+import { FieldInUseError } from '@/domain/error'
 
 describe('UpdateProductController', () => {
   const { id, name, file } = productParams
@@ -31,5 +32,13 @@ describe('UpdateProductController', () => {
 
     expect(updateProduct).toHaveBeenCalledWith({ id, name, file })
     expect(updateProduct).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return badRequest if updateProduct return FieldInUseError', async () => {
+    updateProduct.mockRejectedValueOnce(new FieldInUseError('name'))
+    const { statusCode, data } = await sut.handle({ id, name, file })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new FieldInUseError('name'))
   })
 })
