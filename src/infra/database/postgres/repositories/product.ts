@@ -1,7 +1,7 @@
-import { CheckProductByNameRepository, AddProductRepository, LoadProductRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
+import { CheckProductByNameRepository, AddProductRepository, LoadProductRepository, UpdateProductRepository, DeleteProductRepository } from '@/domain/contracts/database/repositories/product'
 import { prisma, PrismaoHelper } from '@/infra/database/postgres/helpers'
 
-export class ProductRepository implements CheckProductByNameRepository, AddProductRepository, LoadProductRepository, UpdateProductRepository {
+export class ProductRepository implements CheckProductByNameRepository, AddProductRepository, LoadProductRepository, UpdateProductRepository, DeleteProductRepository {
   async checkByName ({ name }: CheckProductByNameRepository.Input): Promise<CheckProductByNameRepository.Output> {
     const isValid = await prisma.product.findFirst({ where: { name } })
 
@@ -26,5 +26,9 @@ export class ProductRepository implements CheckProductByNameRepository, AddProdu
       where: { id },
       data: { name, category_id: categoryId, description, price, picture, id, available }
     })
+  }
+
+  async delete ({ id }: DeleteProductRepository.Input): Promise<DeleteProductRepository.Output> {
+    await prisma.product.delete({ where: { id } })
   }
 }
