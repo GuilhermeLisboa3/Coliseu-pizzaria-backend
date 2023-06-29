@@ -1,5 +1,5 @@
 import { productParams } from '@/tests/mocks'
-import { LoadProductRepository } from '@/domain/contracts/database/repositories/product'
+import { DeleteProductRepository, LoadProductRepository } from '@/domain/contracts/database/repositories/product'
 import { DeleteProduct, deleteProductUseCase } from '@/domain/use-cases/product'
 
 import { mock } from 'jest-mock-extended'
@@ -10,7 +10,7 @@ describe('deleteProductUseCase', () => {
   const { id, name, description, price, available, picture, error } = productParams
   const makeParams = { id }
 
-  const productRepository = mock<LoadProductRepository>()
+  const productRepository = mock<LoadProductRepository & DeleteProductRepository>()
   const fileStorage = mock<DeleteFile>()
 
   let sut: DeleteProduct
@@ -59,5 +59,12 @@ describe('deleteProductUseCase', () => {
     const promise = sut(makeParams)
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call DeleteProductRepository with correct value', async () => {
+    await sut(makeParams)
+
+    expect(productRepository.delete).toHaveBeenCalledWith({ id })
+    expect(productRepository.delete).toHaveBeenCalledTimes(1)
   })
 })
