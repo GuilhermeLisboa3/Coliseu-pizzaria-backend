@@ -6,7 +6,7 @@ import { mock } from 'jest-mock-extended'
 import { FieldNotFoundError } from '@/domain/error'
 
 describe('deleteProductUseCase', () => {
-  const { id, name, description, price, available, picture } = productParams
+  const { id, name, description, price, available, picture, error } = productParams
   const makeParams = { id }
 
   const productRepository = mock<LoadProductRepository>()
@@ -34,5 +34,13 @@ describe('deleteProductUseCase', () => {
     const promise = sut(makeParams)
 
     await expect(promise).rejects.toThrow(new FieldNotFoundError('id'))
+  })
+
+  it('should rethrow if LoadProductRepository throws', async () => {
+    productRepository.load.mockRejectedValueOnce(error)
+
+    const promise = sut(makeParams)
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
