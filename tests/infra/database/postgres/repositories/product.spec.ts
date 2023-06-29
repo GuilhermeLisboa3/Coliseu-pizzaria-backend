@@ -60,4 +60,14 @@ describe('ProductRepository', () => {
       expect(await prisma.product.findFirst({ where: { name: 'any_name' } })).toBeTruthy()
     })
   })
+
+  describe('delete()', () => {
+    it('should delete product on success', async () => {
+      await prisma.product.create({ data: { id, available, description, name, picture, price, category_id: id } })
+
+      await sut.delete({ id })
+
+      expect(await prisma.product.findFirst({ where: { id } })).toBeNull()
+    })
+  })
 })
