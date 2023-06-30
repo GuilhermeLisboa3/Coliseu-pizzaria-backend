@@ -6,6 +6,7 @@ export class ZipCodeApi {
 
   async search ({ zipCode }: SearchAddressByZipCode.Input): Promise<void> {
     const url = `https://brasilapi.com.br/api/cep/v2/${zipCode}`
-    await this.httpGetClient.get({ url })
+    const { status } = await this.httpGetClient.get({ url })
+    if (status !== 200) return undefined
   }
 }
