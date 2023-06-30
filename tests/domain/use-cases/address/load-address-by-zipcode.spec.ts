@@ -8,7 +8,7 @@ import { FieldNotFoundError } from '@/domain/error'
 describe('loadAddressByZipCodeUseCase', () => {
   let sut: LoadAddressByZipCode
 
-  const { zipCode, neighborhood, street } = addressParams
+  const { zipCode, neighborhood, street, error } = addressParams
 
   const searchAddressByZipCode = mock<SearchAddressByZipCode>()
 
@@ -33,5 +33,13 @@ describe('loadAddressByZipCodeUseCase', () => {
     const promise = sut({ zipCode })
 
     await expect(promise).rejects.toThrow(new FieldNotFoundError('zipCode'))
+  })
+
+  it('should rethrow if SearchAddressByZipCode throws', async () => {
+    searchAddressByZipCode.search.mockRejectedValueOnce(error)
+
+    const promise = sut({ zipCode })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
