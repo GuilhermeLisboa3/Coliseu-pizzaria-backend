@@ -19,8 +19,8 @@ type ProductOutput = {
   picture: string | undefined
   categoryId: string
 }
-export const PrismaoHelper = {
-  async productMap ({ available, category_id: categoryId, description, id, name, picture, price }: ProductInput): Promise<ProductOutput> {
+export const PrismaHelper = {
+  productMap ({ available, category_id: categoryId, description, id, name, picture, price }: ProductInput): ProductOutput {
     return {
       id,
       name,

@@ -1,5 +1,5 @@
 import { CheckProductByNameRepository, AddProductRepository, LoadProductRepository, UpdateProductRepository, DeleteProductRepository } from '@/domain/contracts/database/repositories/product'
-import { prisma, PrismaoHelper } from '@/infra/database/postgres/helpers'
+import { prisma, PrismaHelper } from '@/infra/database/postgres/helpers'
 
 export class ProductRepository implements CheckProductByNameRepository, AddProductRepository, LoadProductRepository, UpdateProductRepository, DeleteProductRepository {
   async checkByName ({ name }: CheckProductByNameRepository.Input): Promise<CheckProductByNameRepository.Output> {
@@ -17,7 +17,7 @@ export class ProductRepository implements CheckProductByNameRepository, AddProdu
       where: { id },
       select: { id: true, available: true, description: true, price: true, name: true, picture: true, category_id: true }
     })
-    if (product) return PrismaoHelper.productMap(product)
+    if (product) return PrismaHelper.productMap(product)
     return null
   }
 

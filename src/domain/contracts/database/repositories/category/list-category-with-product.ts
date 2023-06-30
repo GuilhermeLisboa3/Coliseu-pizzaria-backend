@@ -3,9 +3,9 @@ export interface ListCategoryWithProductRepository {
 }
 
 export namespace ListCategoryWithProductRepository {
-  export type Output = {
+  export type Output = Array<{
     id: string
     name: string
     products: Array<{ id: string, categoryId: string, name: string, description: string, price: number, available: boolean, picture?: string }>
-  }
+  }>
 }
