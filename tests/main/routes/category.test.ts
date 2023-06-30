@@ -1,5 +1,5 @@
 import { env } from '@/main/config'
-import { categoryParams, accountParams } from '@/tests/mocks'
+import { categoryParams, accountParams, productParams } from '@/tests/mocks'
 import { app } from '@/main/config/app'
 import { prisma } from '@/infra/database/postgres/helpers'
 import { FieldInUseError, FieldNotFoundError } from '@/domain/error'
@@ -11,6 +11,7 @@ describe('Category routes', () => {
   let token: string
   const { name } = categoryParams
   const { email, password, id } = accountParams
+  const { description, available, picture, price } = productParams
 
   beforeAll(async () => {
     token = sign({ key: id }, env.secret)
@@ -59,6 +60,23 @@ describe('Category routes', () => {
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(204)
+    })
+  })
+
+  describe('GET /categories', () => {
+    it('should return 200 on success', async () => {
+      await prisma.category.create({ data: { id, name } })
+      await prisma.product.create({ data: { id, name, description, available, picture, price, category_id: id } })
+      const { status, body } = await request(app)
+        .get('/categories')
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(200)
+      expect(body).toEqual([{
+        id,
+        name,
+        products: [{ id, name, description, available, picture, price, categoryId: id }]
+      }])
     })
   })
 })
