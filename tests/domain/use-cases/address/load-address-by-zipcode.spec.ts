@@ -42,4 +42,10 @@ describe('loadAddressByZipCodeUseCase', () => {
 
     await expect(promise).rejects.toThrow(error)
   })
+
+  it('should return address on success', async () => {
+    const address = await sut({ zipCode })
+
+    expect(address).toEqual({ neighborhood, street })
+  })
 })
