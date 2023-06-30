@@ -9,6 +9,10 @@ import { RequiredFieldError, UnauthorizedError } from '@/application/errors'
 describe('Account routes', () => {
   const { name, email, password } = accountParams
 
+  beforeEach(async () => {
+    await prisma.$queryRaw`DELETE FROM users`
+  })
+
   describe('POST /signup', () => {
     it('should return 201 on success', async () => {
       const { status } = await request(app)

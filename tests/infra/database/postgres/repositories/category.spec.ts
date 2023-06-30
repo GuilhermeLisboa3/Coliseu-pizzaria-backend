@@ -8,6 +8,8 @@ describe('CategoryRepository', () => {
   const { description, available, picture, price } = productParams
 
   beforeEach(async () => {
+    await prisma.$queryRaw`DELETE FROM products`
+    await prisma.$queryRaw`DELETE FROM categories`
     sut = new CategoryRepository()
   })
   describe('checkByName()', () => {

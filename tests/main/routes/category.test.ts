@@ -13,6 +13,12 @@ describe('Category routes', () => {
   const { email, password, id } = accountParams
   const { description, available, picture, price } = productParams
 
+  beforeEach(async () => {
+    await prisma.$queryRaw`DELETE FROM users`
+    await prisma.$queryRaw`DELETE FROM products`
+    await prisma.$queryRaw`DELETE FROM categories`
+  })
+
   beforeAll(async () => {
     token = sign({ key: id }, env.secret)
   })
