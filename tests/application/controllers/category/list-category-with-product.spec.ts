@@ -19,4 +19,10 @@ describe('ListCategoryWithProductController', () => {
     expect(listCategoryWithProduct).toHaveBeenCalled()
     expect(listCategoryWithProduct).toHaveBeenCalledTimes(1)
   })
+
+  it('should return ok on success', async () => {
+    const { statusCode } = await sut.handle()
+
+    expect(statusCode).toBe(200)
+  })
 })
