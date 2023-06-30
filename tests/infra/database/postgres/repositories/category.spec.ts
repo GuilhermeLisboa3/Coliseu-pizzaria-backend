@@ -73,5 +73,11 @@ describe('CategoryRepository', () => {
         products: [{ id, name, description, available, picture, price, categoryId: id }]
       }])
     })
+
+    it('should return empty array if not has category', async () => {
+      const listCategory = await sut.list()
+
+      expect(listCategory).toEqual([])
+    })
   })
 })
