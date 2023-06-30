@@ -1,15 +1,15 @@
 import { CategoryRepository } from '@/infra/database/postgres/repositories'
-import { categoryParams } from '@/tests/mocks'
+import { categoryParams, productParams } from '@/tests/mocks'
 import { prisma } from '@/infra/database/postgres/helpers'
 
 describe('CategoryRepository', () => {
   let sut: CategoryRepository
   const { id, name } = categoryParams
+  const { description, available, picture, price } = productParams
 
-  beforeEach(() => {
+  beforeEach(async () => {
     sut = new CategoryRepository()
   })
-
   describe('checkByName()', () => {
     it('should return true if name already exists', async () => {
       await prisma.category.create({ data: { name } })
@@ -57,6 +57,21 @@ describe('CategoryRepository', () => {
       await sut.delete({ id })
 
       expect(await prisma.category.findFirst({ where: { id } })).toBeNull()
+    })
+  })
+
+  describe('list()', () => {
+    it('should return category with product', async () => {
+      await prisma.category.create({ data: { id, name } })
+      await prisma.product.create({ data: { id, name, description, available, picture, price, category_id: id } })
+
+      const listCategory = await sut.list()
+
+      expect(listCategory).toEqual([{
+        id,
+        name,
+        products: [{ id, name, description, available, picture, price, categoryId: id }]
+      }])
     })
   })
 })
