@@ -28,4 +28,12 @@ describe('AddressRepository', () => {
       expect(result).toEqual([{ id, active, complement, neighborhood, number, street, surname, zipCode, accountId: id }])
     })
   })
+
+  describe('create()', () => {
+    it('should create address on success', async () => {
+      const result = await sut.create({ accountId: id, active, complement, neighborhood, number, street, surname, zipCode })
+
+      expect(result).toMatchObject({ accountId: id, active, complement, neighborhood, number, street, surname, zipCode })
+    })
+  })
 })
