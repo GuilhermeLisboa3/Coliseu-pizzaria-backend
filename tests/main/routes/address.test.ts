@@ -14,7 +14,7 @@ jest.mock('@/infra/gateways/zipcode-api')
 describe('Address routes', () => {
   let token: string
   const { email, password, id, name } = accountParams
-  const { zipCode, neighborhood, street, complement, number, surname } = addressParams
+  const { zipCode, neighborhood, street, complement, number, surname, active } = addressParams
 
   const searchSpy: jest.Mock = jest.fn()
 
@@ -82,6 +82,18 @@ describe('Address routes', () => {
 
       expect(status).toBe(200)
       expect(body).toMatchObject({ zipCode, neighborhood, street, complement, number, surname })
+    })
+  })
+
+  describe('GET /addresses', () => {
+    it('should return 200 on success', async () => {
+      await prisma.address.create({ data: { zipCode, neighborhood, street, complement, number, surname, user_id: id, active } })
+      const { status, body } = await request(app)
+        .get('/addresses')
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(200)
+      expect(body).toMatchObject([{ zipCode, neighborhood, street, complement, number, surname, accountId: id }])
     })
   })
 })
