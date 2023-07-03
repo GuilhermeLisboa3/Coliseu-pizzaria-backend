@@ -8,8 +8,8 @@ describe('AddressRepository', () => {
   const { active, complement, neighborhood, number, street, surname, zipCode } = addressParams
 
   beforeEach(async () => {
-    await prisma.$queryRaw`DELETE FROM users`
     await prisma.$queryRaw`DELETE FROM addresses`
+    await prisma.$queryRaw`DELETE FROM users`
     await prisma.user.create({ data: { id, name, email, password } })
     sut = new AddressRepository()
   })

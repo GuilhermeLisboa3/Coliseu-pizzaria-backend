@@ -14,6 +14,7 @@ describe('Product routes', () => {
   const { description, picture, price, available } = productParams
 
   beforeEach(async () => {
+    await prisma.$queryRaw`DELETE FROM addresses`
     await prisma.$queryRaw`DELETE FROM users`
     await prisma.$queryRaw`DELETE FROM products`
     await prisma.$queryRaw`DELETE FROM categories`

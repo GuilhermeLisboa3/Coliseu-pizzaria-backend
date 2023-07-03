@@ -7,6 +7,7 @@ describe('AccountRepository', () => {
   const { email, name, password, id } = accountParams
 
   beforeEach(async () => {
+    await prisma.$queryRaw`DELETE FROM addresses`
     await prisma.$queryRaw`DELETE FROM users`
     sut = new AccountRepository()
   })

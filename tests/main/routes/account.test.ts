@@ -10,6 +10,7 @@ describe('Account routes', () => {
   const { name, email, password } = accountParams
 
   beforeEach(async () => {
+    await prisma.$queryRaw`DELETE FROM addresses`
     await prisma.$queryRaw`DELETE FROM users`
   })
 
