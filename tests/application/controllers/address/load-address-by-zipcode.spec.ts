@@ -7,7 +7,11 @@ import { FieldNotFoundError } from '@/domain/error'
 describe('LoadAddressByZipCodeController', () => {
   let sut: LoadAddressByZipCodeController
   const loadAddressByZipCode = jest.fn()
-  const { zipCode } = addressParams
+  const { zipCode, neighborhood, street } = addressParams
+
+  beforeAll(() => {
+    loadAddressByZipCode.mockResolvedValue({ neighborhood, street })
+  })
 
   beforeEach(() => {
     sut = new LoadAddressByZipCodeController(loadAddressByZipCode)
@@ -38,5 +42,12 @@ describe('LoadAddressByZipCodeController', () => {
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new FieldNotFoundError('zipCode'))
+  })
+
+  it('should return ok on success', async () => {
+    const { statusCode, data } = await sut.handle({ zipCode })
+
+    expect(statusCode).toBe(200)
+    expect(data).toEqual({ neighborhood, street })
   })
 })
