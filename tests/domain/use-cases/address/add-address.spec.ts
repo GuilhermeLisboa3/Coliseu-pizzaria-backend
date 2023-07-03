@@ -1,6 +1,6 @@
 import { addressParams } from '@/tests/mocks'
 import { SearchAddressByZipCode } from '@/domain/contracts/gateways'
-import { LoadAddressRepository } from '@/domain/contracts/database/repositories/address'
+import { LoadAddressRepository, AddAddressRepository } from '@/domain/contracts/database/repositories/address'
 import { addAddressUseCase, AddAddress } from '@/domain/use-cases/address'
 
 import { mock } from 'jest-mock-extended'
@@ -12,10 +12,11 @@ describe('addAddressUseCase', () => {
   const { zipCode, neighborhood, street, complement, id, number, surname, error } = addressParams
 
   const searchAddressByZipCode = mock<SearchAddressByZipCode>()
-  const addressRepository = mock<LoadAddressRepository>()
+  const addressRepository = mock<LoadAddressRepository & AddAddressRepository>()
 
   beforeAll(() => {
     searchAddressByZipCode.search.mockResolvedValue({ neighborhood, street })
+    addressRepository.load.mockResolvedValue([])
   })
 
   beforeEach(() => {
@@ -58,5 +59,12 @@ describe('addAddressUseCase', () => {
     const promise = sut({ zipCode, neighborhood, street, number, surname, complement, accountId: id })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call addAddressRepository with correct value', async () => {
+    await sut({ zipCode, neighborhood, street, number, surname, complement, accountId: id })
+
+    expect(addressRepository.create).toHaveBeenCalledWith({ zipCode, neighborhood, street, number, surname, complement, accountId: id, active: true })
+    expect(addressRepository.create).toHaveBeenCalledTimes(1)
   })
 })
