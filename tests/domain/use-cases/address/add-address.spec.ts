@@ -17,6 +17,7 @@ describe('addAddressUseCase', () => {
   beforeAll(() => {
     searchAddressByZipCode.search.mockResolvedValue({ neighborhood, street })
     addressRepository.load.mockResolvedValue([])
+    addressRepository.create.mockResolvedValue({ id, zipCode, neighborhood, street, number, surname, complement, accountId: id, active: true })
   })
 
   beforeEach(() => {
@@ -74,5 +75,11 @@ describe('addAddressUseCase', () => {
     const promise = sut({ zipCode, neighborhood, street, number, surname, complement, accountId: id })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should return address on success', async () => {
+    const result = await sut({ zipCode, neighborhood, street, number, surname, complement, accountId: id })
+
+    expect(result).toEqual({ id, zipCode, neighborhood, street, number, surname, complement, accountId: id, active: true })
   })
 })
