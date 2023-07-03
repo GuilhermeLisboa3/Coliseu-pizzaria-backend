@@ -7,6 +7,7 @@ import { ZipCodeApi } from '@/infra/gateways'
 import request from 'supertest'
 import { sign } from 'jsonwebtoken'
 import { FieldNotFoundError } from '@/domain/error'
+import { RequiredFieldError } from '@/application/errors'
 
 jest.mock('@/infra/gateways/zipcode-api')
 
@@ -61,6 +62,16 @@ describe('Address routes', () => {
 
       expect(status).toBe(400)
       expect(error).toBe(new FieldNotFoundError('zipCode').message)
+    })
+
+    it('should return 400 if has invalid data', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/address')
+        .set({ authorization: `Bearer: ${token}` })
+        .send({ zipCode, neighborhood, street, complement, number })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new RequiredFieldError('surname').message)
     })
   })
 })
