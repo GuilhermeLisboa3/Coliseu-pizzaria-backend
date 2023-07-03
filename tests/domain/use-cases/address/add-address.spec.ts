@@ -1,6 +1,6 @@
 import { addressParams } from '@/tests/mocks'
 import { SearchAddressByZipCode } from '@/domain/contracts/gateways'
-import { LoadAddressRepository, AddAddressRepository } from '@/domain/contracts/database/repositories/address'
+import { ListAddressRepository, AddAddressRepository } from '@/domain/contracts/database/repositories/address'
 import { addAddressUseCase, AddAddress } from '@/domain/use-cases/address'
 
 import { mock } from 'jest-mock-extended'
@@ -12,11 +12,11 @@ describe('addAddressUseCase', () => {
   const { zipCode, neighborhood, street, complement, id, number, surname, error } = addressParams
 
   const searchAddressByZipCode = mock<SearchAddressByZipCode>()
-  const addressRepository = mock<LoadAddressRepository & AddAddressRepository>()
+  const addressRepository = mock<ListAddressRepository & AddAddressRepository>()
 
   beforeAll(() => {
     searchAddressByZipCode.search.mockResolvedValue({ neighborhood, street })
-    addressRepository.load.mockResolvedValue([])
+    addressRepository.list.mockResolvedValue([])
     addressRepository.create.mockResolvedValue({ id, zipCode, neighborhood, street, number, surname, complement, accountId: id, active: true })
   })
 
@@ -47,15 +47,15 @@ describe('addAddressUseCase', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('should call LoadAddressRepository with correct value', async () => {
+  it('should call ListAddressRepository with correct value', async () => {
     await sut({ zipCode, neighborhood, street, number, surname, complement, accountId: id })
 
-    expect(addressRepository.load).toHaveBeenCalledWith({ accountId: id })
-    expect(addressRepository.load).toHaveBeenCalledTimes(1)
+    expect(addressRepository.list).toHaveBeenCalledWith({ accountId: id })
+    expect(addressRepository.list).toHaveBeenCalledTimes(1)
   })
 
-  it('should rethrow if LoadAddressRepository throws', async () => {
-    addressRepository.load.mockRejectedValueOnce(error)
+  it('should rethrow if ListAddressRepository throws', async () => {
+    addressRepository.list.mockRejectedValueOnce(error)
 
     const promise = sut({ zipCode, neighborhood, street, number, surname, complement, accountId: id })
 

@@ -1,2 +1,2 @@
-export * from './load-address'
+export * from './list-address'
 export * from './add-address'

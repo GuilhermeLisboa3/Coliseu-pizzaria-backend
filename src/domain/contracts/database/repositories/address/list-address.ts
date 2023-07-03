@@ -1,8 +1,8 @@
-export interface LoadAddressRepository {
-  load: (input: LoadAddressRepository.Input) => Promise<LoadAddressRepository.Output>
+export interface ListAddressRepository {
+  list: (input: ListAddressRepository.Input) => Promise<ListAddressRepository.Output>
 }
 
-export namespace LoadAddressRepository {
+export namespace ListAddressRepository {
   export type Input = {
     accountId: string
   }
