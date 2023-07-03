@@ -6,6 +6,7 @@ import { ZipCodeApi } from '@/infra/gateways'
 
 import request from 'supertest'
 import { sign } from 'jsonwebtoken'
+import { FieldNotFoundError } from '@/domain/error'
 
 jest.mock('@/infra/gateways/zipcode-api')
 
@@ -36,6 +37,17 @@ describe('Address routes', () => {
 
       expect(status).toBe(200)
       expect(body).toEqual({ neighborhood, street })
+    })
+
+    it('should return 400 if zipCode not exists', async () => {
+      searchSpy.mockReturnValueOnce(undefined)
+      const { status, body: { error } } = await request(app)
+        .get('/address')
+        .set({ authorization: `Bearer: ${token}` })
+        .send({ zipCode })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new FieldNotFoundError('zipCode').message)
     })
   })
 })
