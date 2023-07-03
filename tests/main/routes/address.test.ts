@@ -13,7 +13,7 @@ jest.mock('@/infra/gateways/zipcode-api')
 describe('Address routes', () => {
   let token: string
   const { email, password, id, name } = accountParams
-  const { zipCode, neighborhood, street } = addressParams
+  const { zipCode, neighborhood, street, complement, number, surname } = addressParams
 
   const searchSpy: jest.Mock = jest.fn()
 
@@ -45,6 +45,19 @@ describe('Address routes', () => {
         .get('/address')
         .set({ authorization: `Bearer: ${token}` })
         .send({ zipCode })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new FieldNotFoundError('zipCode').message)
+    })
+  })
+
+  describe('POST /address', () => {
+    it('should return 400 if zipCode not exists', async () => {
+      searchSpy.mockReturnValueOnce(undefined)
+      const { status, body: { error } } = await request(app)
+        .post('/address')
+        .set({ authorization: `Bearer: ${token}` })
+        .send({ zipCode, neighborhood, street, complement, number, surname })
 
       expect(status).toBe(400)
       expect(error).toBe(new FieldNotFoundError('zipCode').message)
