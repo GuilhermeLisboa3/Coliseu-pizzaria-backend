@@ -22,6 +22,7 @@ describe('Address routes', () => {
 
   beforeAll(async () => {
     token = sign({ key: id }, env.secret)
+    searchSpy.mockReturnValue({ neighborhood, street })
   })
 
   beforeEach(async () => {
@@ -30,7 +31,6 @@ describe('Address routes', () => {
 
   describe('GET /address', () => {
     it('should return 200 on success', async () => {
-      searchSpy.mockReturnValueOnce({ neighborhood, street })
       const { status, body } = await request(app)
         .get('/address')
         .set({ authorization: `Bearer: ${token}` })
@@ -72,6 +72,16 @@ describe('Address routes', () => {
 
       expect(status).toBe(400)
       expect(error).toBe(new RequiredFieldError('surname').message)
+    })
+
+    it('should return 200 on success', async () => {
+      const { status, body } = await request(app)
+        .post('/address')
+        .set({ authorization: `Bearer: ${token}` })
+        .send({ zipCode, neighborhood, street, complement, number, surname })
+
+      expect(status).toBe(200)
+      expect(body).toMatchObject({ zipCode, neighborhood, street, complement, number, surname })
     })
   })
 })
