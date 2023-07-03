@@ -15,6 +15,7 @@ model User {
   email String @unique
   password String
   role String? @default("user")
+  addresses Address[]
 
   @@map("users")
 }
@@ -42,3 +43,16 @@ model Product {
   @@map("products")
 }
 
+model Address {
+  id String @id @default(uuid())
+  surname String
+  zipCode String
+  neighborhood String
+  street String
+  number Int
+  complement String?
+  active Boolean
+  user_id String
+  user User @relation(fields: [user_id], references: [id])
+  @@map("addresses")
+}
