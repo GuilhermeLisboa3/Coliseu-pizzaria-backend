@@ -9,6 +9,10 @@ describe('AddAddressController', () => {
   const { neighborhood, complement, number, street, surname, zipCode, id } = addressParams
   const addAddress = jest.fn()
 
+  beforeAll(() => {
+    addAddress.mockResolvedValue({ neighborhood, complement, number, street, surname, zipCode, id })
+  })
+
   beforeEach(() => {
     sut = new AddAddressController(addAddress)
   })
@@ -42,5 +46,12 @@ describe('AddAddressController', () => {
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new FieldNotFoundError('zipCode'))
+  })
+
+  it('should return ok on success', async () => {
+    const { statusCode, data } = await sut.handle({ neighborhood, complement, number, street, surname, zipCode, accountId: id })
+
+    expect(statusCode).toBe(200)
+    expect(data).toEqual({ neighborhood, complement, number, street, surname, zipCode, id })
   })
 })
