@@ -51,4 +51,12 @@ describe('addAddressUseCase', () => {
     expect(addressRepository.load).toHaveBeenCalledWith({ accountId: id })
     expect(addressRepository.load).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if LoadAddressRepository throws', async () => {
+    addressRepository.load.mockRejectedValueOnce(error)
+
+    const promise = sut({ zipCode, neighborhood, street, number, surname, complement, accountId: id })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
