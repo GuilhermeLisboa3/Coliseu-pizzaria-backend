@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers'
-import { HttpResponse } from '@/application/helpers'
+import { HttpResponse, ok } from '@/application/helpers'
 import { Validator, ValidationBuilder as Builder } from '@/application/validation'
 import { AddAddress } from '@/domain/use-cases/address'
 
@@ -9,8 +9,8 @@ export class AddAddressController extends Controller {
   constructor (private readonly addAddress: AddAddress) { super() }
 
   async perform (input: HttpRequest): Promise<HttpResponse> {
-    await this.addAddress({ ...input })
-    return { data: null, statusCode: 200 }
+    const address = await this.addAddress({ ...input })
+    return ok(address)
   }
 
   buildValidators ({ zipCode, neighborhood, number, street, surname }: HttpRequest): Validator[] {
