@@ -2,6 +2,7 @@ import { LoadAddressByZipCodeController } from '@/application/controllers/addres
 import { Controller } from '@/application/controllers'
 import { addressParams } from '@/tests/mocks'
 import { RequiredValidation } from '@/application/validation'
+import { FieldNotFoundError } from '@/domain/error'
 
 describe('LoadAddressByZipCodeController', () => {
   let sut: LoadAddressByZipCodeController
@@ -29,5 +30,13 @@ describe('LoadAddressByZipCodeController', () => {
 
     expect(loadAddressByZipCode).toHaveBeenCalledWith({ zipCode })
     expect(loadAddressByZipCode).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return badRequest if loadAddressByZipCode return FieldNotFoundError', async () => {
+    loadAddressByZipCode.mockRejectedValueOnce(new FieldNotFoundError('zipCode'))
+    const { statusCode, data } = await sut.handle({ zipCode })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new FieldNotFoundError('zipCode'))
   })
 })
