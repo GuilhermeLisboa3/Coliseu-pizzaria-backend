@@ -2,6 +2,7 @@ import { AddAddressController } from '@/application/controllers/address'
 import { Controller } from '@/application/controllers'
 import { addressParams } from '@/tests/mocks'
 import { RequiredValidation } from '@/application/validation'
+import { FieldNotFoundError } from '@/domain/error'
 
 describe('AddAddressController', () => {
   let sut: AddAddressController
@@ -33,5 +34,13 @@ describe('AddAddressController', () => {
 
     expect(addAddress).toHaveBeenCalledWith({ neighborhood, complement, number, street, surname, zipCode, accountId: id })
     expect(addAddress).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return badRequest if addAddress return FieldNotFoundError', async () => {
+    addAddress.mockRejectedValueOnce(new FieldNotFoundError('zipCode'))
+    const { statusCode, data } = await sut.handle({ neighborhood, complement, number, street, surname, zipCode, accountId: id })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new FieldNotFoundError('zipCode'))
   })
 })
