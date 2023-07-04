@@ -1,6 +1,7 @@
 import { DeleteAddressController } from '@/application/controllers/address'
 import { Controller } from '@/application/controllers'
 import { addressParams } from '@/tests/mocks'
+import { FieldNotFoundError } from '@/domain/error'
 
 describe('DeleteAddressController', () => {
   let sut: DeleteAddressController
@@ -20,5 +21,13 @@ describe('DeleteAddressController', () => {
 
     expect(deleteAddress).toHaveBeenCalledWith({ id })
     expect(deleteAddress).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return badRequest if deleteAddress return FieldNotFoundError', async () => {
+    deleteAddress.mockRejectedValueOnce(new FieldNotFoundError('id'))
+    const { statusCode, data } = await sut.handle({ id })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new FieldNotFoundError('id'))
   })
 })
