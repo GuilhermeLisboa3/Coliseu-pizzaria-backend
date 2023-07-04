@@ -6,11 +6,12 @@ type Input = { accountId: string, id: string, surname?: string, number?: number,
 type Output = void
 export type UpdateAddress = (input: Input) => Promise<Output>
 
-export const updateAddressUseCase: Setup = (addressRepository) => async ({ id, accountId, active }) => {
+export const updateAddressUseCase: Setup = (addressRepository) => async ({ id, accountId, active, complement, number, surname }) => {
   const address = await addressRepository.checkById({ id })
   if (!address) throw new FieldNotFoundError('id')
   if (active) {
     const addresses = await addressRepository.list({ accountId })
     if (addresses.length) addresses.map(async address => await addressRepository.update({ id: address.id, active: false }))
   }
+  await addressRepository.update({ id, active, complement, number, surname })
 }
