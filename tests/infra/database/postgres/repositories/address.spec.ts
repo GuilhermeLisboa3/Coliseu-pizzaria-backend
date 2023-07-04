@@ -62,4 +62,14 @@ describe('AddressRepository', () => {
       expect(await prisma.address.findFirst({ where: { id } })).toBeNull()
     })
   })
+
+  describe('update()', () => {
+    it('should update address on success', async () => {
+      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, user_id: id } })
+
+      await sut.update({ id, complement: 'any_value' })
+
+      expect(await prisma.address.findFirst({ where: { id } })).toMatchObject({ complement: 'any_value' })
+    })
+  })
 })
