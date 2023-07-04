@@ -52,4 +52,14 @@ describe('AddressRepository', () => {
       expect(result).toBeTruthy()
     })
   })
+
+  describe('delete()', () => {
+    it('should delete address on success', async () => {
+      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, user_id: id } })
+
+      await sut.delete({ id })
+
+      expect(await prisma.address.findFirst({ where: { id } })).toBeNull()
+    })
+  })
 })
