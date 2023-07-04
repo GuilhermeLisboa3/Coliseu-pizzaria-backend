@@ -1,5 +1,5 @@
 import { addressParams, accountParams } from '@/tests/mocks'
-import { CheckAddressByIdRepository, ListAddressRepository } from '@/domain/contracts/database/repositories/address'
+import { CheckAddressByIdRepository, ListAddressRepository, UpdateAddressRepository } from '@/domain/contracts/database/repositories/address'
 import { UpdateAddress, updateAddressUseCase } from '@/domain/use-cases/address'
 
 import { mock } from 'jest-mock-extended'
@@ -8,13 +8,14 @@ import { FieldNotFoundError } from '@/domain/error'
 describe('updateAddressUseCase', () => {
   let sut: UpdateAddress
 
-  const { id, error, active } = addressParams
+  const { id, error, complement, neighborhood, number, street, surname, zipCode, active } = addressParams
   const { id: accountId } = accountParams
 
-  const addressRepository = mock<CheckAddressByIdRepository & ListAddressRepository>()
+  const addressRepository = mock<CheckAddressByIdRepository & ListAddressRepository & UpdateAddressRepository>()
 
   beforeAll(() => {
     addressRepository.checkById.mockResolvedValue(true)
+    addressRepository.list.mockResolvedValue([{ id, complement, neighborhood, number, street, surname, zipCode, accountId, active }])
   })
 
   beforeEach(() => {
@@ -49,5 +50,12 @@ describe('updateAddressUseCase', () => {
 
     expect(addressRepository.list).toHaveBeenCalledWith({ accountId })
     expect(addressRepository.list).toHaveBeenCalledTimes(1)
+  })
+
+  it('should call UpdateAddressRepository if ListAddressRepository return andresses', async () => {
+    await sut({ id, accountId, active })
+
+    expect(addressRepository.update).toHaveBeenCalledWith({ id, active: false })
+    expect(addressRepository.update).toHaveBeenCalledTimes(1)
   })
 })
