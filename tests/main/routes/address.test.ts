@@ -117,4 +117,17 @@ describe('Address routes', () => {
       expect(status).toBe(204)
     })
   })
+
+  describe('PUT /address', () => {
+    it('should return 400 if id not exists', async () => {
+      searchSpy.mockReturnValueOnce(undefined)
+      const { status, body: { error } } = await request(app)
+        .put('/address')
+        .set({ authorization: `Bearer: ${token}` })
+        .send({ id })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new FieldNotFoundError('id').message)
+    })
+  })
 })
