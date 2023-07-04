@@ -8,7 +8,7 @@ import { FieldNotFoundError } from '@/domain/error'
 describe('deleteAddressUseCase', () => {
   let sut: DeleteAddress
 
-  const { id } = addressParams
+  const { id, error } = addressParams
 
   const addressRepository = mock<CheckAddressByIdRepository >()
 
@@ -33,5 +33,13 @@ describe('deleteAddressUseCase', () => {
     const promise = sut({ id })
 
     await expect(promise).rejects.toThrow(new FieldNotFoundError('id'))
+  })
+
+  it('should rethrow if CheckAddressByIdRepository throws', async () => {
+    addressRepository.checkById.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
