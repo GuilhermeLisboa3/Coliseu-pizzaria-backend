@@ -49,4 +49,12 @@ describe('deleteAddressUseCase', () => {
     expect(addressRepository.delete).toHaveBeenCalledWith({ id })
     expect(addressRepository.delete).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if DeleteAddressRepository throws', async () => {
+    addressRepository.delete.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
