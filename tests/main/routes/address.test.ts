@@ -96,4 +96,16 @@ describe('Address routes', () => {
       expect(body).toMatchObject([{ zipCode, neighborhood, street, complement, number, surname, accountId: id }])
     })
   })
+
+  describe('DELETE /address/:id', () => {
+    it('should return 400 if id not exists', async () => {
+      searchSpy.mockReturnValueOnce(undefined)
+      const { status, body: { error } } = await request(app)
+        .delete(`/address/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new FieldNotFoundError('id').message)
+    })
+  })
 })
