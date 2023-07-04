@@ -6,9 +6,10 @@ import { RequiredValidation } from '@/application/validation'
 describe('UpdateAddressController', () => {
   let sut: UpdateAddressController
   const { id, complement } = addressParams
+  const updateAddress = jest.fn()
 
   beforeEach(() => {
-    sut = new UpdateAddressController()
+    sut = new UpdateAddressController(updateAddress)
   })
 
   it('should extend Controller', async () => {
@@ -21,5 +22,12 @@ describe('UpdateAddressController', () => {
     expect(validators).toEqual([
       new RequiredValidation(id, 'id')
     ])
+  })
+
+  it('should call addAddress with correct values', async () => {
+    await sut.handle({ id, complement, accountId: id })
+
+    expect(updateAddress).toHaveBeenCalledWith({ id, complement, accountId: id })
+    expect(updateAddress).toHaveBeenCalledTimes(1)
   })
 })
