@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers'
-import { HttpResponse } from '@/application/helpers'
+import { HttpResponse, noContent } from '@/application/helpers'
 import { Validator, ValidationBuilder as Builder } from '@/application/validation'
 import { UpdateAddress } from '@/domain/use-cases/address'
 
@@ -10,7 +10,7 @@ export class UpdateAddressController extends Controller {
 
   async perform ({ id, accountId, active, complement, number, surname }: HttpRequest): Promise<HttpResponse> {
     await this.updateAddress({ id, accountId, active, complement, number, surname })
-    return { statusCode: 200, data: null }
+    return noContent()
   }
 
   buildValidators ({ id }: HttpRequest): Validator[] {
