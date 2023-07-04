@@ -65,4 +65,12 @@ describe('updateAddressUseCase', () => {
     expect(addressRepository.update).toHaveBeenCalledWith({ id, complement, number, surname, active: undefined })
     expect(addressRepository.update).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if UpdateAddressRepository throws', async () => {
+    addressRepository.update.mockRejectedValueOnce(error)
+
+    const promise = sut({ id, accountId })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
