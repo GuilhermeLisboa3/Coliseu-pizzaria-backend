@@ -1,5 +1,5 @@
 import { addressParams, accountParams } from '@/tests/mocks'
-import { CheckAddressByIdRepository } from '@/domain/contracts/database/repositories/address'
+import { CheckAddressByIdRepository, ListAddressRepository } from '@/domain/contracts/database/repositories/address'
 import { UpdateAddress, updateAddressUseCase } from '@/domain/use-cases/address'
 
 import { mock } from 'jest-mock-extended'
@@ -8,10 +8,10 @@ import { FieldNotFoundError } from '@/domain/error'
 describe('updateAddressUseCase', () => {
   let sut: UpdateAddress
 
-  const { id, error } = addressParams
+  const { id, error, active } = addressParams
   const { id: accountId } = accountParams
 
-  const addressRepository = mock<CheckAddressByIdRepository>()
+  const addressRepository = mock<CheckAddressByIdRepository & ListAddressRepository>()
 
   beforeAll(() => {
     addressRepository.checkById.mockResolvedValue(true)
@@ -42,5 +42,12 @@ describe('updateAddressUseCase', () => {
     const promise = sut({ id, accountId })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call ListAddressRepository if active exists', async () => {
+    await sut({ id, accountId, active })
+
+    expect(addressRepository.list).toHaveBeenCalledWith({ accountId })
+    expect(addressRepository.list).toHaveBeenCalledTimes(1)
   })
 })
