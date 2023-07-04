@@ -1,7 +1,7 @@
-import { ListAddressRepository, AddAddressRepository, CheckAddressByIdRepository, DeleteAddressRepository } from '@/domain/contracts/database/repositories/address'
+import { ListAddressRepository, AddAddressRepository, CheckAddressByIdRepository, DeleteAddressRepository, UpdateAddressRepository } from '@/domain/contracts/database/repositories/address'
 import { prisma, PrismaHelper } from '@/infra/database/postgres/helpers'
 
-export class AddressRepository implements ListAddressRepository, AddAddressRepository, CheckAddressByIdRepository, DeleteAddressRepository {
+export class AddressRepository implements ListAddressRepository, AddAddressRepository, CheckAddressByIdRepository, DeleteAddressRepository, UpdateAddressRepository {
   async list ({ accountId }: ListAddressRepository.Input): Promise<ListAddressRepository.Output> {
     const addresses = await prisma.address.findMany({ where: { user_id: accountId } })
 
@@ -22,5 +22,9 @@ export class AddressRepository implements ListAddressRepository, AddAddressRepos
 
   async delete ({ id }: DeleteAddressRepository.Input): Promise<DeleteAddressRepository.Output> {
     await prisma.address.delete({ where: { id } })
+  }
+
+  async update ({ id, active, complement, number, surname }: UpdateAddressRepository.Input): Promise<UpdateAddressRepository.Output> {
+    await prisma.address.update({ where: { id }, data: { active, complement, number, surname } })
   }
 }
