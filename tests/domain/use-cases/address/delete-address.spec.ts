@@ -1,5 +1,5 @@
 import { addressParams } from '@/tests/mocks'
-import { CheckAddressByIdRepository } from '@/domain/contracts/database/repositories/address'
+import { CheckAddressByIdRepository, DeleteAddressRepository } from '@/domain/contracts/database/repositories/address'
 import { DeleteAddress, deleteAddressUseCase } from '@/domain/use-cases/address'
 
 import { mock } from 'jest-mock-extended'
@@ -10,7 +10,7 @@ describe('deleteAddressUseCase', () => {
 
   const { id, error } = addressParams
 
-  const addressRepository = mock<CheckAddressByIdRepository >()
+  const addressRepository = mock<CheckAddressByIdRepository & DeleteAddressRepository>()
 
   beforeAll(() => {
     addressRepository.checkById.mockResolvedValue(true)
@@ -41,5 +41,12 @@ describe('deleteAddressUseCase', () => {
     const promise = sut({ id })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call DeleteAddressRepository with correct value', async () => {
+    await sut({ id })
+
+    expect(addressRepository.delete).toHaveBeenCalledWith({ id })
+    expect(addressRepository.delete).toHaveBeenCalledTimes(1)
   })
 })
