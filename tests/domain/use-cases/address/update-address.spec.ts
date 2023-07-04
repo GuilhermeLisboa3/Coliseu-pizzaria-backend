@@ -73,4 +73,10 @@ describe('updateAddressUseCase', () => {
 
     await expect(promise).rejects.toThrow(error)
   })
+
+  it('should return undefined on success', async () => {
+    const result = await sut({ id, accountId, complement, number, surname })
+
+    expect(result).toBeUndefined()
+  })
 })
