@@ -36,4 +36,12 @@ describe('AddressRepository', () => {
       expect(result).toMatchObject({ accountId: id, active, complement, neighborhood, number, street, surname, zipCode })
     })
   })
+
+  describe('checkById()', () => {
+    it('should return false if address does not exists', async () => {
+      const result = await sut.checkById({ id })
+
+      expect(result).toBeFalsy()
+    })
+  })
 })
