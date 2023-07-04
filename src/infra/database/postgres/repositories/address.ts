@@ -1,7 +1,7 @@
-import { ListAddressRepository, AddAddressRepository } from '@/domain/contracts/database/repositories/address'
+import { ListAddressRepository, AddAddressRepository, CheckAddressByIdRepository } from '@/domain/contracts/database/repositories/address'
 import { prisma, PrismaHelper } from '@/infra/database/postgres/helpers'
 
-export class AddressRepository implements ListAddressRepository, AddAddressRepository {
+export class AddressRepository implements ListAddressRepository, AddAddressRepository, CheckAddressByIdRepository {
   async list ({ accountId }: ListAddressRepository.Input): Promise<ListAddressRepository.Output> {
     const addresses = await prisma.address.findMany({ where: { user_id: accountId } })
 
@@ -12,5 +12,11 @@ export class AddressRepository implements ListAddressRepository, AddAddressRepos
     const address = await prisma.address.create({ data: { user_id: accountId, ...input } })
 
     return PrismaHelper.addressMap(address)
+  }
+
+  async checkById ({ id }: CheckAddressByIdRepository.Input): Promise<CheckAddressByIdRepository.Output> {
+    const address = await prisma.address.findFirst({ where: { id } })
+
+    return address != null
   }
 }
