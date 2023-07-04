@@ -129,5 +129,15 @@ describe('Address routes', () => {
       expect(status).toBe(400)
       expect(error).toBe(new FieldNotFoundError('id').message)
     })
+
+    it('should return 204 on success', async () => {
+      await prisma.address.create({ data: { id, zipCode, neighborhood, street, complement, number, surname, user_id: id, active } })
+      const { status } = await request(app)
+        .delete(`/address/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+        .send({ id, number: 16 })
+
+      expect(status).toBe(204)
+    })
   })
 })
