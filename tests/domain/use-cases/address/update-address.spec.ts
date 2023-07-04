@@ -56,6 +56,13 @@ describe('updateAddressUseCase', () => {
     await sut({ id, accountId, active })
 
     expect(addressRepository.update).toHaveBeenCalledWith({ id, active: false })
+    expect(addressRepository.update).toHaveBeenCalledTimes(2)
+  })
+
+  it('should call UpdateAddressRepository with correct values', async () => {
+    await sut({ id, accountId, complement, number, surname })
+
+    expect(addressRepository.update).toHaveBeenCalledWith({ id, complement, number, surname, active: undefined })
     expect(addressRepository.update).toHaveBeenCalledTimes(1)
   })
 })
