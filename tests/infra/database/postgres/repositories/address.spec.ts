@@ -43,5 +43,13 @@ describe('AddressRepository', () => {
 
       expect(result).toBeFalsy()
     })
+
+    it('should return true if address exists', async () => {
+      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, user_id: id } })
+
+      const result = await sut.checkById({ id })
+
+      expect(result).toBeTruthy()
+    })
   })
 })
