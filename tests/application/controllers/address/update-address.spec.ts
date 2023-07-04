@@ -2,6 +2,7 @@ import { UpdateAddressController } from '@/application/controllers/address'
 import { Controller } from '@/application/controllers'
 import { addressParams } from '@/tests/mocks'
 import { RequiredValidation } from '@/application/validation'
+import { FieldNotFoundError } from '@/domain/error'
 
 describe('UpdateAddressController', () => {
   let sut: UpdateAddressController
@@ -29,5 +30,13 @@ describe('UpdateAddressController', () => {
 
     expect(updateAddress).toHaveBeenCalledWith({ id, complement, accountId: id })
     expect(updateAddress).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return badRequest if deleteAddress return FieldNotFoundError', async () => {
+    updateAddress.mockRejectedValueOnce(new FieldNotFoundError('id'))
+    const { statusCode, data } = await sut.handle({ id })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new FieldNotFoundError('id'))
   })
 })
