@@ -16,6 +16,7 @@ model User {
   password String
   role String? @default("user")
   addresses Address[]
+  cart Cart?
 
   @@map("users")
 }
@@ -56,3 +57,12 @@ model Address {
   user User @relation(fields: [userId], references: [id])
   @@map("addresses")
 }
+
+model Cart {
+  id String @id @default(uuid())
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("carts")
+}
+
