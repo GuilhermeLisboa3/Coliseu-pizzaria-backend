@@ -12,7 +12,7 @@ describe('AddCartItem', () => {
 
   const { id: accountId } = accountParams
   const { id: categoryId } = categoryParams
-  const { id: productId, available, description, name, picture, price } = productParams
+  const { id: productId, available, description, name, picture, price, error } = productParams
 
   beforeAll(() => {
     productRepository.load.mockResolvedValue({ id: productId, available, description, name, picture, price, categoryId })
@@ -35,5 +35,13 @@ describe('AddCartItem', () => {
     const promise = sut({ accountId, productId })
 
     await expect(promise).rejects.toThrow(new FieldNotFoundError('productId'))
+  })
+
+  it('should rethrow if LoadProductRepository throws', async () => {
+    productRepository.load.mockRejectedValueOnce(error)
+
+    const promise = sut({ accountId, productId })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
