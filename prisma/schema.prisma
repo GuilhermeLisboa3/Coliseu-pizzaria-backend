@@ -37,8 +37,8 @@ model Product {
   price Decimal
   available Boolean
   picture String?
-  category_id String
-  category Category @relation(fields: [category_id], references: [id])
+  categoryId String
+  category Category @relation(fields: [categoryId], references: [id])
   
   @@map("products")
 }
@@ -52,7 +52,7 @@ model Address {
   number Int
   complement String?
   active Boolean
-  user_id String
-  user User @relation(fields: [user_id], references: [id])
+  userId String
+  user User @relation(fields: [userId], references: [id])
   @@map("addresses")
 }

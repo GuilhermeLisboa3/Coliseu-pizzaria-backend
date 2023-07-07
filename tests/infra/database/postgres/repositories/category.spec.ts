@@ -65,7 +65,7 @@ describe('CategoryRepository', () => {
   describe('list()', () => {
     it('should return category with product', async () => {
       await prisma.category.create({ data: { id, name } })
-      await prisma.product.create({ data: { id, name, description, available, picture, price, category_id: id } })
+      await prisma.product.create({ data: { id, name, description, available, picture, price, categoryId: id } })
 
       const listCategory = await sut.list()
 

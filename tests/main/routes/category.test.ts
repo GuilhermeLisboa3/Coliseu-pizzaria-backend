@@ -73,7 +73,7 @@ describe('Category routes', () => {
   describe('GET /categories', () => {
     it('should return 200 on success', async () => {
       await prisma.category.create({ data: { id, name } })
-      await prisma.product.create({ data: { id, name, description, available, picture, price, category_id: id } })
+      await prisma.product.create({ data: { id, name, description, available, picture, price, categoryId: id } })
       const { status, body } = await request(app)
         .get('/categories')
         .set({ authorization: `Bearer: ${token}` })

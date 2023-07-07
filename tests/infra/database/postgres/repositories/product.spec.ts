@@ -15,7 +15,7 @@ describe('ProductRepository', () => {
 
   describe('checkByName()', () => {
     it('should return true if email already exists', async () => {
-      await prisma.product.create({ data: { available, description, name, picture, price, category_id: id } })
+      await prisma.product.create({ data: { available, description, name, picture, price, categoryId: id } })
 
       const result = await sut.checkByName({ name })
 
@@ -39,7 +39,7 @@ describe('ProductRepository', () => {
 
   describe('load()', () => {
     it('should return product on success', async () => {
-      await prisma.product.create({ data: { id, available, description, name, picture, price, category_id: id } })
+      await prisma.product.create({ data: { id, available, description, name, picture, price, categoryId: id } })
 
       const product = await sut.load({ id })
 
@@ -55,7 +55,7 @@ describe('ProductRepository', () => {
 
   describe('update()', () => {
     it('should return undefined on success', async () => {
-      await prisma.product.create({ data: { id, available, description, name, picture, price, category_id: id } })
+      await prisma.product.create({ data: { id, available, description, name, picture, price, categoryId: id } })
 
       await sut.update({ id, name: 'any_name' })
 
@@ -65,7 +65,7 @@ describe('ProductRepository', () => {
 
   describe('delete()', () => {
     it('should delete product on success', async () => {
-      await prisma.product.create({ data: { id, available, description, name, picture, price, category_id: id } })
+      await prisma.product.create({ data: { id, available, description, name, picture, price, categoryId: id } })
 
       await sut.delete({ id })
 

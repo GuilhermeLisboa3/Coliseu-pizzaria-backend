@@ -22,7 +22,7 @@ describe('AddressRepository', () => {
     })
 
     it('should return address list', async () => {
-      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, user_id: id } })
+      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, userId: id } })
       const result = await sut.list({ accountId: id })
 
       expect(result).toEqual([{ id, active, complement, neighborhood, number, street, surname, zipCode, accountId: id }])
@@ -45,7 +45,7 @@ describe('AddressRepository', () => {
     })
 
     it('should return true if address exists', async () => {
-      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, user_id: id } })
+      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, userId: id } })
 
       const result = await sut.checkById({ id })
 
@@ -55,7 +55,7 @@ describe('AddressRepository', () => {
 
   describe('delete()', () => {
     it('should delete address on success', async () => {
-      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, user_id: id } })
+      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, userId: id } })
 
       await sut.delete({ id })
 
@@ -65,7 +65,7 @@ describe('AddressRepository', () => {
 
   describe('update()', () => {
     it('should update address on success', async () => {
-      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, user_id: id } })
+      await prisma.address.create({ data: { id, active, complement, neighborhood, number, street, surname, zipCode, userId: id } })
 
       await sut.update({ id, complement: 'any_value' })
 

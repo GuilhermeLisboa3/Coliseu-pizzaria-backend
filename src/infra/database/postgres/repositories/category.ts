@@ -29,7 +29,7 @@ export class CategoryRepository implements CheckCategoryByNameRepository, AddCat
       select: {
         id: true,
         name: true,
-        product: { select: { id: true, available: true, description: true, price: true, name: true, picture: true, category_id: true } }
+        product: { select: { id: true, available: true, description: true, price: true, name: true, picture: true, categoryId: true } }
       }
     })
     return categories.map(category => {

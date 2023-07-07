@@ -7,7 +7,7 @@ type ProductInput = {
   price: Decimal
   available: boolean
   picture: string | null
-  category_id: string
+  categoryId: string
 }
 
 type ProductOutput = {
@@ -22,7 +22,7 @@ type ProductOutput = {
 
 type AddressInput = {
   id: string
-  user_id: string
+  userId: string
   surname: string
   zipCode: string
   neighborhood: string
@@ -45,7 +45,7 @@ type AddressOutput = {
 }
 
 export const PrismaHelper = {
-  productMap ({ available, category_id: categoryId, description, id, name, picture, price }: ProductInput): ProductOutput {
+  productMap ({ available, categoryId, description, id, name, picture, price }: ProductInput): ProductOutput {
     return {
       id,
       name,
@@ -57,7 +57,7 @@ export const PrismaHelper = {
     }
   },
 
-  addressMap ({ user_id: accountId, complement, ...input }: AddressInput): AddressOutput {
+  addressMap ({ userId: accountId, complement, ...input }: AddressInput): AddressOutput {
     return { accountId, complement: complement ?? undefined, ...input }
   }
 }

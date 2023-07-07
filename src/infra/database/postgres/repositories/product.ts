@@ -9,13 +9,13 @@ export class ProductRepository implements CheckProductByNameRepository, AddProdu
   }
 
   async create ({ name, categoryId, description, price, picture }: AddProductRepository.Input): Promise<AddProductRepository.Output> {
-    await prisma.product.create({ data: { name, category_id: categoryId, description, price, available: true, picture } })
+    await prisma.product.create({ data: { name, categoryId: categoryId, description, price, available: true, picture } })
   }
 
   async load ({ id }: LoadProductRepository.Input): Promise<LoadProductRepository.Output> {
     const product = await prisma.product.findFirst({
       where: { id },
-      select: { id: true, available: true, description: true, price: true, name: true, picture: true, category_id: true }
+      select: { id: true, available: true, description: true, price: true, name: true, picture: true, categoryId: true }
     })
     if (product) return PrismaHelper.productMap(product)
     return null
@@ -24,7 +24,7 @@ export class ProductRepository implements CheckProductByNameRepository, AddProdu
   async update ({ name, categoryId, description, price, picture, id, available }: UpdateProductRepository.Input): Promise<UpdateProductRepository.Output> {
     await prisma.product.update({
       where: { id },
-      data: { name, category_id: categoryId, description, price, picture, id, available }
+      data: { name, categoryId: categoryId, description, price, picture, id, available }
     })
   }
 

@@ -87,7 +87,7 @@ describe('Address routes', () => {
 
   describe('GET /addresses', () => {
     it('should return 200 on success', async () => {
-      await prisma.address.create({ data: { zipCode, neighborhood, street, complement, number, surname, user_id: id, active } })
+      await prisma.address.create({ data: { zipCode, neighborhood, street, complement, number, surname, userId: id, active } })
       const { status, body } = await request(app)
         .get('/addresses')
         .set({ authorization: `Bearer: ${token}` })
@@ -109,7 +109,7 @@ describe('Address routes', () => {
     })
 
     it('should return 204 on success', async () => {
-      await prisma.address.create({ data: { id, zipCode, neighborhood, street, complement, number, surname, user_id: id, active } })
+      await prisma.address.create({ data: { id, zipCode, neighborhood, street, complement, number, surname, userId: id, active } })
       const { status } = await request(app)
         .delete(`/address/${id}`)
         .set({ authorization: `Bearer: ${token}` })
@@ -131,7 +131,7 @@ describe('Address routes', () => {
     })
 
     it('should return 204 on success', async () => {
-      await prisma.address.create({ data: { id, zipCode, neighborhood, street, complement, number, surname, user_id: id, active } })
+      await prisma.address.create({ data: { id, zipCode, neighborhood, street, complement, number, surname, userId: id, active } })
       const { status } = await request(app)
         .delete(`/address/${id}`)
         .set({ authorization: `Bearer: ${token}` })
