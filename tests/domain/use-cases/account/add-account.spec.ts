@@ -86,6 +86,14 @@ describe('AddAccount', () => {
     expect(cartRepository.create).toHaveBeenCalledTimes(1)
   })
 
+  it('should rethrow if AddCartRepository throws', async () => {
+    cartRepository.create.mockRejectedValueOnce(error)
+
+    const promise = sut({ name, email, password })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
   it('should return undefined on success', async () => {
     const result = await sut({ name, email, password })
 
