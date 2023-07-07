@@ -9,7 +9,8 @@ export class AccountRepository implements CheckAccountByEmailRepository, AddAcco
   }
 
   async create ({ email, name, password }: AddAccountRepository.Input): Promise<AddAccountRepository.Output> {
-    await prisma.user.create({ data: { name, email, password } })
+    const { id } = await prisma.user.create({ data: { name, email, password } })
+    return { id }
   }
 
   async loadByEmail ({ email }: LoadAccountByEmailRepository.Input): Promise<LoadAccountByEmailRepository.Output> {

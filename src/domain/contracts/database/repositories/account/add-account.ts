@@ -9,5 +9,7 @@ export namespace AddAccountRepository {
     password: string
   }
 
-  export type Output = void
+  export type Output = {
+    id: string
+  }
 }
