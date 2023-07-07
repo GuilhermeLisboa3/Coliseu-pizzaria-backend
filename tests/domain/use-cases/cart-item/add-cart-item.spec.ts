@@ -81,4 +81,12 @@ describe('AddCartItem', () => {
     expect(cartItemRepository.load).toHaveBeenCalledWith({ cartId: id, productId })
     expect(cartItemRepository.load).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if LoadCartItemRepository throws', async () => {
+    cartItemRepository.load.mockRejectedValueOnce(error)
+
+    const promise = sut({ accountId, productId })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
