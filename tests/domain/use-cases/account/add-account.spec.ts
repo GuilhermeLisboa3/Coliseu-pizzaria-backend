@@ -5,22 +5,25 @@ import { HashGenerator } from '@/domain/contracts/gateways'
 import { FieldInUseError } from '@/domain/error'
 
 import { mock } from 'jest-mock-extended'
+import { CartRepository } from '@/infra/database/postgres/repositories'
 
 describe('AddAccount', () => {
   let sut: AddAccount
 
-  const { name, email, password, error, hashPassword } = accountParams
+  const { name, email, password, error, hashPassword, id } = accountParams
 
   const accountRepository = mock<CheckAccountByEmailRepository & AddAccountRepository>()
+  const cartRepository = mock<CartRepository>()
   const hash = mock<HashGenerator>()
 
   beforeAll(() => {
     accountRepository.checkByEmail.mockResolvedValue(false)
+    accountRepository.create.mockResolvedValue({ id })
     hash.generate.mockResolvedValue(hashPassword)
   })
 
   beforeEach(() => {
-    sut = addAccountUseCase(accountRepository, hash)
+    sut = addAccountUseCase(accountRepository, hash, cartRepository)
   })
 
   it('should call CheckAccountByEmailRepository with correct email', async () => {
@@ -74,6 +77,13 @@ describe('AddAccount', () => {
     const promise = sut({ name, email, password })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call AddCartRepository with correct values', async () => {
+    await sut({ name, email, password })
+
+    expect(cartRepository.create).toHaveBeenCalledWith({ accountId: id })
+    expect(cartRepository.create).toHaveBeenCalledTimes(1)
   })
 
   it('should return undefined on success', async () => {
