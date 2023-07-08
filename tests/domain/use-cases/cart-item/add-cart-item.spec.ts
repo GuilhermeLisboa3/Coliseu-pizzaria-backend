@@ -22,6 +22,7 @@ describe('AddCartItem', () => {
 
   beforeAll(() => {
     cartItemRepository.load.mockResolvedValue({ id, cartId: id, productId, quantity: 1 })
+    cartItemRepository.update.mockResolvedValue({ id, cartId: id, productId, quantity: 1 })
     cartRepository.load.mockResolvedValue({ accountId, id })
     productRepository.load.mockResolvedValue({ id: productId, available, description, name, picture, price, categoryId })
   })
@@ -101,6 +102,7 @@ describe('AddCartItem', () => {
   })
 
   it('should rethrow if AddCartItemRepository throws', async () => {
+    cartItemRepository.load.mockResolvedValueOnce(null)
     cartItemRepository.create.mockRejectedValueOnce(error)
 
     const promise = sut({ accountId, productId })
@@ -121,5 +123,11 @@ describe('AddCartItem', () => {
     const promise = sut({ accountId, productId })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should return cart item on success', async () => {
+    const result = await sut({ accountId, productId })
+
+    expect(result).toEqual({ id, cartId: id, productId, quantity: 1 })
   })
 })
