@@ -40,6 +40,7 @@ model Product {
   picture String?
   categoryId String
   category Category @relation(fields: [categoryId], references: [id])
+  cartItem CartItem[]
   
   @@map("products")
 }
@@ -62,7 +63,19 @@ model Cart {
   id String @id @default(uuid())
   userId String @unique
   user User @relation(fields: [userId], references: [id])
+  cartItem CartItem[]
 
   @@map("carts")
+}
+
+model CartItem {
+  id String @id @default(uuid())
+  cartId String
+  cart Cart @relation(fields: [cartId], references: [id])
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  quantity Int
+
+  @@map("cartItems")
 }
 
