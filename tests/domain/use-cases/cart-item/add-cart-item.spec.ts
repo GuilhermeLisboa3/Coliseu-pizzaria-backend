@@ -2,7 +2,7 @@ import { accountParams, productParams, categoryParams } from '@/tests/mocks'
 import { AddCartItem, addCartItemUseCase } from '@/domain/use-cases/cart-item'
 import { LoadProductRepository } from '@/domain/contracts/database/repositories/product'
 import { LoadCartRepository } from '@/domain/contracts/database/repositories/cart'
-import { LoadCartItemRepository, AddCartItemRepository } from '@/domain/contracts/database/repositories/cart-item'
+import { LoadCartItemRepository, AddCartItemRepository, UpdateCartItemRepository } from '@/domain/contracts/database/repositories/cart-item'
 
 import { mock } from 'jest-mock-extended'
 import { FieldNotFoundError } from '@/domain/error'
@@ -13,7 +13,7 @@ describe('AddCartItem', () => {
 
   const productRepository = mock<LoadProductRepository>()
   const cartRepository = mock<LoadCartRepository>()
-  const cartItemRepository = mock<LoadCartItemRepository & AddCartItemRepository>()
+  const cartItemRepository = mock<LoadCartItemRepository & AddCartItemRepository & UpdateCartItemRepository>()
 
   const id = faker.datatype.uuid()
   const { id: accountId } = accountParams
@@ -21,6 +21,7 @@ describe('AddCartItem', () => {
   const { id: productId, available, description, name, picture, price, error } = productParams
 
   beforeAll(() => {
+    cartItemRepository.load.mockResolvedValue({ id, cartId: id, productId, quantity: 1 })
     cartRepository.load.mockResolvedValue({ accountId, id })
     productRepository.load.mockResolvedValue({ id: productId, available, description, name, picture, price, categoryId })
   })
@@ -90,7 +91,9 @@ describe('AddCartItem', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('should call AddCartItemRepository if LoadCartItemRepository null', async () => {
+  it('should call AddCartItemRepository if LoadCartItemRepository return null', async () => {
+    cartItemRepository.load.mockResolvedValueOnce(null)
+
     await sut({ accountId, productId })
 
     expect(cartItemRepository.create).toHaveBeenCalledWith({ cartId: id, productId })
@@ -103,5 +106,12 @@ describe('AddCartItem', () => {
     const promise = sut({ accountId, productId })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call UpdateCartItemRepository if LoadCartItemRepository return cart item', async () => {
+    await sut({ accountId, productId })
+
+    expect(cartItemRepository.update).toHaveBeenCalledWith({ cartId: id, productId, quantity: 2 })
+    expect(cartItemRepository.update).toHaveBeenCalledTimes(1)
   })
 })
