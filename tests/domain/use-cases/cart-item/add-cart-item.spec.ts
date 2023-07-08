@@ -2,18 +2,18 @@ import { accountParams, productParams, categoryParams } from '@/tests/mocks'
 import { AddCartItem, addCartItemUseCase } from '@/domain/use-cases/cart-item'
 import { LoadProductRepository } from '@/domain/contracts/database/repositories/product'
 import { LoadCartRepository } from '@/domain/contracts/database/repositories/cart'
+import { LoadCartItemRepository, AddCartItemRepository } from '@/domain/contracts/database/repositories/cart-item'
 
 import { mock } from 'jest-mock-extended'
 import { FieldNotFoundError } from '@/domain/error'
 import faker from 'faker'
-import { LoadCartItemRepository } from '@/domain/contracts/database/repositories/cart-item'
 
 describe('AddCartItem', () => {
   let sut: AddCartItem
 
   const productRepository = mock<LoadProductRepository>()
   const cartRepository = mock<LoadCartRepository>()
-  const cartItemRepository = mock<LoadCartItemRepository>()
+  const cartItemRepository = mock<LoadCartItemRepository & AddCartItemRepository>()
 
   const id = faker.datatype.uuid()
   const { id: accountId } = accountParams
@@ -88,5 +88,12 @@ describe('AddCartItem', () => {
     const promise = sut({ accountId, productId })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call AddCartItemRepository if LoadCartItemRepository null', async () => {
+    await sut({ accountId, productId })
+
+    expect(cartItemRepository.create).toHaveBeenCalledWith({ cartId: id, productId })
+    expect(cartItemRepository.create).toHaveBeenCalledTimes(1)
   })
 })
