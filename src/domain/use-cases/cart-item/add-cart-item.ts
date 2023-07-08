@@ -9,7 +9,7 @@ type Setup = (
   cartItemRepository: LoadCartItemRepository & AddCartItemRepository & UpdateCartItemRepository
 ) => AddCartItem
 type Input = { accountId: string, productId: string }
-type Output = void
+type Output = { id: string, cartId: string, productId: string, quantity: number }
 export type AddCartItem = (input: Input) => Promise<Output>
 
 export const addCartItemUseCase: Setup = (productRepository, cartRepository, cartItemRepository) => async ({ accountId, productId }) => {
@@ -19,7 +19,7 @@ export const addCartItemUseCase: Setup = (productRepository, cartRepository, car
   if (!cart) throw new FieldNotFoundError('cart')
   const cartItem = await cartItemRepository.load({ cartId: cart.id, productId })
   if (cartItem) {
-    await cartItemRepository.update({ cartId: cart.id, productId, quantity: cartItem.quantity + 1 })
+    return await cartItemRepository.update({ cartId: cart.id, productId, quantity: cartItem.quantity + 1 })
   }
-  await cartItemRepository.create({ cartId: cart.id, productId })
+  return await cartItemRepository.create({ cartId: cart.id, productId })
 }
