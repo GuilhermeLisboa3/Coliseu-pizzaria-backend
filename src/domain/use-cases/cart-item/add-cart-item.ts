@@ -19,7 +19,7 @@ export const addCartItemUseCase: Setup = (productRepository, cartRepository, car
   if (!cart) throw new FieldNotFoundError('cart')
   const cartItem = await cartItemRepository.load({ cartId: cart.id, productId })
   if (cartItem) {
-    return await cartItemRepository.update({ id: cart.id, quantity: cartItem.quantity + 1 })
+    return await cartItemRepository.update({ id: cartItem.id, quantity: cartItem.quantity + 1 })
   }
   return await cartItemRepository.create({ cartId: cart.id, productId })
 }
