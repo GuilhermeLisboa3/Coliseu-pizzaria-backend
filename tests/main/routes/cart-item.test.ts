@@ -38,5 +38,13 @@ describe('Cart Item routes', () => {
       expect(status).toBe(400)
       expect(error).toEqual(new FieldNotFoundError('productId').message)
     })
+
+    it('should return 200 on success', async () => {
+      const { status } = await request(app)
+        .post(`/cart-item/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(200)
+    })
   })
 })
