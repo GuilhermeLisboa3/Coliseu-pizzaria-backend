@@ -19,4 +19,14 @@ describe('CartRepository', () => {
       expect(result).toMatchObject({ accountId: id })
     })
   })
+
+  describe('load()', () => {
+    it('should return cart on success', async () => {
+      await prisma.cart.create({ data: { id, userId: id } })
+
+      const result = await sut.load({ accountId: id })
+
+      expect(result).toEqual({ id, accountId: id })
+    })
+  })
 })
