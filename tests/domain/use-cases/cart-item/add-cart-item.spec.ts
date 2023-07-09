@@ -113,7 +113,7 @@ describe('AddCartItem', () => {
   it('should call UpdateCartItemRepository if LoadCartItemRepository return cart item', async () => {
     await sut({ accountId, productId })
 
-    expect(cartItemRepository.update).toHaveBeenCalledWith({ cartId: id, productId, quantity: 2 })
+    expect(cartItemRepository.update).toHaveBeenCalledWith({ id: id, quantity: 2 })
     expect(cartItemRepository.update).toHaveBeenCalledTimes(1)
   })
 

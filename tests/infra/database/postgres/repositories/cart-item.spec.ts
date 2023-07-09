@@ -42,4 +42,14 @@ describe('CartItemRepository', () => {
       expect(result).toBeNull()
     })
   })
+
+  describe('update()', () => {
+    it('should return a cart item on success', async () => {
+      await prisma.cartItem.create({ data: { id, cartId: id, productId: id, quantity: 1 } })
+
+      const result = await sut.update({ id, quantity: 2 })
+
+      expect(result).toMatchObject({ id, cartId: id, productId: id, quantity: 2 })
+    })
+  })
 })
