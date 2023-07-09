@@ -3,7 +3,7 @@ export interface UpdateCartItemRepository {
 }
 
 export namespace UpdateCartItemRepository {
-  export type Input = { cartId: string, productId: string, quantity: number }
+  export type Input = { id: string, quantity: number }
 
   export type Output = { id: string, cartId: string, productId: string, quantity: number }
 }
