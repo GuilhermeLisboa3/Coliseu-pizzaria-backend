@@ -18,15 +18,12 @@ describe('Product routes', () => {
     await prisma.$queryRaw`DELETE FROM users`
     await prisma.$queryRaw`DELETE FROM products`
     await prisma.$queryRaw`DELETE FROM categories`
+    await prisma.user.create({ data: { id, name, email, password, role: 'admin' } })
+    await prisma.category.create({ data: { id, name } })
   })
 
   beforeAll(async () => {
     token = sign({ key: id }, env.secret)
-  })
-
-  beforeEach(async () => {
-    await prisma.user.create({ data: { id, name, email, password, role: 'admin' } })
-    await prisma.category.create({ data: { id, name } })
   })
 
   describe('POST /product', () => {
