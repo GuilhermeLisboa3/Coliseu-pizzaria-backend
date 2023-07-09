@@ -9,6 +9,10 @@ describe('AddCartItemController', () => {
   const { id: accountId } = accountParams
   const { id: productId } = productParams
 
+  beforeAll(() => {
+    addCartItem.mockResolvedValue({ })
+  })
+
   beforeEach(() => {
     sut = new AddCartItemController(addCartItem)
   })
@@ -30,5 +34,12 @@ describe('AddCartItemController', () => {
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new FieldNotFoundError('productId'))
+  })
+
+  it('should return ok on success', async () => {
+    const { data, statusCode } = await sut.handle({ accountId, productId })
+
+    expect(statusCode).toBe(200)
+    expect(data).toEqual({ })
   })
 })
