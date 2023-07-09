@@ -8,6 +8,7 @@ describe('CartRepository', () => {
 
   beforeEach(async () => {
     await prisma.$queryRaw`DELETE FROM users`
+    await prisma.$queryRaw`DELETE FROM carts`
     await prisma.user.create({ data: { id, name, password, email } })
     sut = new CartRepository()
   })
@@ -27,6 +28,12 @@ describe('CartRepository', () => {
       const result = await sut.load({ accountId: id })
 
       expect(result).toEqual({ id, accountId: id })
+    })
+
+    it('should return null if not cart exists', async () => {
+      const result = await sut.load({ accountId: id })
+
+      expect(result).toBeNull()
     })
   })
 })
