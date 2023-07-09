@@ -35,5 +35,11 @@ describe('CartItemRepository', () => {
 
       expect(result).toMatchObject({ cartId: id, productId: id, quantity: 1 })
     })
+
+    it('should return null if not cart item exists', async () => {
+      const result = await sut.load({ cartId: id, productId: id })
+
+      expect(result).toBeNull()
+    })
   })
 })
