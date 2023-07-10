@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers'
-import { HttpResponse } from '@/application/helpers'
+import { HttpResponse, noContent } from '@/application/helpers'
 import { DeleteCartItem } from '@/domain/use-cases/cart-item'
 
 type HttpRequest = { accountId: string, id: string }
@@ -9,6 +9,6 @@ export class DeleteCartItemController extends Controller {
 
   async perform ({ accountId, id }: HttpRequest): Promise<HttpResponse> {
     await this.deleteCartItem({ accountId, productId: id })
-    return { statusCode: 200, data: null }
+    return noContent()
   }
 }
