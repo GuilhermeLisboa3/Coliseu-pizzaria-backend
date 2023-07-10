@@ -21,4 +21,10 @@ describe('LoadCartWithProductsController', () => {
     expect(loadCartWithProducts).toHaveBeenCalledWith({ accountId })
     expect(loadCartWithProducts).toHaveBeenCalledTimes(1)
   })
+
+  it('should return ok on success', async () => {
+    const { statusCode } = await sut.handle({ accountId })
+
+    expect(statusCode).toBe(200)
+  })
 })
