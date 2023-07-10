@@ -5,7 +5,7 @@ import { addCategory, listCategory, deleteCategory } from '@/main/docs/paths/cat
 import { addCategoryRequest, listCategoryResponse } from '@/main/docs/schemas/category'
 import { addProduct, updateProduct, deleteProduct } from '@/main/docs/paths/product'
 import { productSchema, addProductRequest, updateProductRequest } from '@/main/docs/schemas/product'
-import { loadAddressByZipCode, addAddress, updateAddress, listAddresses } from '@/main/docs/paths/address'
+import { loadAddressByZipCode, addAddress, updateAddress, listAddresses, deleteAddress } from '@/main/docs/paths/address'
 import { loadAddressByZipCodeResponse, addAddressRequest, addAddressResponse, updateAddressRequest, listAddressesResponse } from '@/main/docs/schemas/address'
 import { badRequest, serverError, unauthorized, forbidden, securitySchemes } from '@/main/docs/components'
 
@@ -34,7 +34,8 @@ export const swagger = {
     '/address/{zipCode}': loadAddressByZipCode,
     '/address': addAddress,
     '/address/': updateAddress,
-    '/addresses': listAddresses
+    '/addresses': listAddresses,
+    '/address/{id}': deleteAddress
 
   },
   schemas: {
