@@ -10,6 +10,11 @@ export const unauthorized = {
   content: { 'application/json': { schema: { $ref: error } } }
 }
 
+export const forbidden = {
+  description: 'Access denied',
+  content: { 'application/json': { schema: { $ref: error } } }
+}
+
 export const serverError = {
   description: 'Internal server error',
   content: { 'application/json': { schema: { $ref: error } } }

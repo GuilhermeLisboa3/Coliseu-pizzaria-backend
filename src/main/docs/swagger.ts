@@ -1,7 +1,9 @@
 import { error } from '@/main/docs/schemas/errors'
 import { signup, login } from '@/main/docs/paths/account'
 import { signUpRequest, loginRequest, loginResponse } from '@/main/docs/schemas/account'
-import { badRequest, serverError, unauthorized } from '@/main/docs/components'
+import { addCategory } from '@/main/docs/paths/category'
+import { addCategoryRequest } from '@/main/docs/schemas/category'
+import { badRequest, serverError, unauthorized, forbidden, securitySchemes } from '@/main/docs/components'
 
 export const swagger = {
   openapi: '3.0.0',
@@ -15,16 +17,18 @@ export const swagger = {
     }
   },
   servers: [{ url: '/' }],
-  tags: [{ name: 'Account' }],
+  tags: [{ name: 'Account' }, { name: 'Category' }],
   paths: {
     '/signup': signup,
-    '/login': login
+    '/login': login,
+    '/category': addCategory
   },
   schemas: {
     error,
     signUpRequest,
     loginRequest,
-    loginResponse
+    loginResponse,
+    addCategoryRequest
   },
-  components: { badRequest, serverError, unauthorized }
+  components: { securitySchemes, forbidden, badRequest, serverError, unauthorized }
 }
