@@ -10,5 +10,6 @@ export type DeleteCartItem = (input: Input) => Promise<Output>
 export const deleteCartItemUseCase: Setup = (productRepository, cartRepository) => async ({ accountId, productId }) => {
   const product = await productRepository.load({ id: productId })
   if (!product) throw new FieldNotFoundError('productId')
-  await cartRepository.load({ accountId })
+  const cart = await cartRepository.load({ accountId })
+  if (!cart) throw new FieldNotFoundError('cart')
 }
