@@ -105,4 +105,12 @@ describe('DeleteCartItem', () => {
     expect(cartItemRepository.update).toHaveBeenCalledWith({ id: id, quantity: 1 })
     expect(cartItemRepository.update).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if UpdateCartItemRepository throws', async () => {
+    cartItemRepository.update.mockRejectedValueOnce(error)
+
+    const promise = sut({ accountId, productId })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
