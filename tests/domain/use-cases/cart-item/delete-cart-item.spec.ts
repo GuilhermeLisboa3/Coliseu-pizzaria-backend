@@ -1,14 +1,16 @@
 import { accountParams, productParams, categoryParams } from '@/tests/mocks'
 import { DeleteCartItem, deleteCartItemUseCase } from '@/domain/use-cases/cart-item'
 import { LoadProductRepository } from '@/domain/contracts/database/repositories/product'
+import { LoadCartRepository } from '@/domain/contracts/database/repositories/cart'
 import { FieldNotFoundError } from '@/domain/error'
 
 import { mock } from 'jest-mock-extended'
-import { LoadCartRepository } from '@/domain/contracts/database/repositories/cart'
+import faker from 'faker'
 
 describe('DeleteCartItem', () => {
   let sut: DeleteCartItem
 
+  const id = faker.datatype.uuid()
   const productRepository = mock<LoadProductRepository>()
   const cartRepository = mock<LoadCartRepository>()
 
@@ -17,6 +19,7 @@ describe('DeleteCartItem', () => {
   const { id: productId, available, description, name, picture, price, error } = productParams
 
   beforeAll(() => {
+    cartRepository.load.mockResolvedValue({ id, accountId })
     productRepository.load.mockResolvedValue({ id: productId, available, description, name, picture, price, categoryId })
   })
 
@@ -52,5 +55,13 @@ describe('DeleteCartItem', () => {
 
     expect(cartRepository.load).toHaveBeenCalledWith({ accountId })
     expect(cartRepository.load).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw FieldNotFoundError if LoadCartRepository return null', async () => {
+    cartRepository.load.mockResolvedValueOnce(null)
+
+    const promise = sut({ accountId, productId })
+
+    await expect(promise).rejects.toThrow(new FieldNotFoundError('cart'))
   })
 })
