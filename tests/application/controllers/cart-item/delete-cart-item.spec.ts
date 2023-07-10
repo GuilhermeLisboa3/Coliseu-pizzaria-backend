@@ -32,4 +32,10 @@ describe('DeleteCartItemController', () => {
     expect(statusCode).toBe(400)
     expect(data).toEqual(new FieldNotFoundError('productId'))
   })
+
+  it('should return noContent on success', async () => {
+    const { statusCode } = await sut.handle({ accountId, id })
+
+    expect(statusCode).toBe(204)
+  })
 })
