@@ -128,4 +128,10 @@ describe('DeleteCartItem', () => {
 
     await expect(promise).rejects.toThrow(error)
   })
+
+  it('should return undefined on success', async () => {
+    const result = await sut({ accountId, productId })
+
+    expect(result).toBeUndefined()
+  })
 })
