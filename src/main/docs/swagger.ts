@@ -1,7 +1,7 @@
 import { error } from '@/main/docs/schemas/errors'
 import { signup, login } from '@/main/docs/paths/account'
 import { signUpRequest, loginRequest, loginResponse } from '@/main/docs/schemas/account'
-import { addCategory, listCategory } from '@/main/docs/paths/category'
+import { addCategory, listCategory, deleteCategory } from '@/main/docs/paths/category'
 import { addCategoryRequest, listCategoryResponse } from '@/main/docs/schemas/category'
 import { productSchema } from '@/main/docs/schemas/product'
 import { badRequest, serverError, unauthorized, forbidden, securitySchemes } from '@/main/docs/components'
@@ -23,7 +23,8 @@ export const swagger = {
     '/signup': signup,
     '/login': login,
     '/category': addCategory,
-    '/categories': listCategory
+    '/categories': listCategory,
+    '/category/{id}': deleteCategory
   },
   schemas: {
     error,
