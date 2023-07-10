@@ -47,4 +47,15 @@ describe('Cart Item routes', () => {
       expect(status).toBe(200)
     })
   })
+
+  describe('DELETE /cart-item/:id', () => {
+    it('should return 400 if product not exists', async () => {
+      const { status, body: { error } } = await request(app)
+        .delete(`/cart-item/${2}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toEqual(new FieldNotFoundError('productId').message)
+    })
+  })
 })
