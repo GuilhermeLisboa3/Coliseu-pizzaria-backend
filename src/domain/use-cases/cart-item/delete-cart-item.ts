@@ -17,5 +17,6 @@ export const deleteCartItemUseCase: Setup = (productRepository, cartRepository, 
   if (!product) throw new FieldNotFoundError('productId')
   const cart = await cartRepository.load({ accountId })
   if (!cart) throw new FieldNotFoundError('cart')
-  await cartItemRepository.load({ cartId: cart.id, productId })
+  const cartItem = await cartItemRepository.load({ cartId: cart.id, productId })
+  if (!cartItem) throw new FieldNotFoundError('cartItem')
 }
