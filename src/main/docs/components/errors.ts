@@ -5,6 +5,11 @@ export const badRequest = {
   content: { 'application/json': { schema: { $ref: error } } }
 }
 
+export const unauthorized = {
+  description: 'Unauthorized',
+  content: { 'application/json': { schema: { $ref: error } } }
+}
+
 export const serverError = {
   description: 'Internal server error',
   content: { 'application/json': { schema: { $ref: error } } }
