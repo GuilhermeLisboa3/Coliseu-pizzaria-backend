@@ -90,4 +90,12 @@ describe('DeleteCartItem', () => {
 
     await expect(promise).rejects.toThrow(new FieldNotFoundError('cartItem'))
   })
+
+  it('should rethrow if LoadCartItemRepository throws', async () => {
+    cartItemRepository.load.mockRejectedValueOnce(error)
+
+    const promise = sut({ accountId, productId })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
