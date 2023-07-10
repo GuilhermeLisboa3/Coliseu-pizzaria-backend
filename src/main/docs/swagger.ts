@@ -5,8 +5,8 @@ import { addCategory, listCategory, deleteCategory } from '@/main/docs/paths/cat
 import { addCategoryRequest, listCategoryResponse } from '@/main/docs/schemas/category'
 import { addProduct, updateProduct, deleteProduct } from '@/main/docs/paths/product'
 import { productSchema, addProductRequest, updateProductRequest } from '@/main/docs/schemas/product'
-import { loadAddressByZipCode, addAddress } from '@/main/docs/paths/address'
-import { loadAddressByZipCodeResponse, addAddressRequest, addAddressResponse } from '@/main/docs/schemas/address'
+import { loadAddressByZipCode, addAddress, updateAddress } from '@/main/docs/paths/address'
+import { loadAddressByZipCodeResponse, addAddressRequest, addAddressResponse, updateAddressRequest } from '@/main/docs/schemas/address'
 import { badRequest, serverError, unauthorized, forbidden, securitySchemes } from '@/main/docs/components'
 
 export const swagger = {
@@ -32,7 +32,8 @@ export const swagger = {
     '/product/{id}': updateProduct,
     '/product/{id}/': deleteProduct,
     '/address/{zipCode}': loadAddressByZipCode,
-    '/address': addAddress
+    '/address': addAddress,
+    '/address/': updateAddress
 
   },
   schemas: {
@@ -47,7 +48,8 @@ export const swagger = {
     updateProductRequest,
     loadAddressByZipCodeResponse,
     addAddressRequest,
-    addAddressResponse
+    addAddressResponse,
+    updateAddressRequest
   },
   components: { securitySchemes, forbidden, badRequest, serverError, unauthorized }
 }
