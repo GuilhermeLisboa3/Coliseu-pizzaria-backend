@@ -5,4 +5,4 @@ type Output = {
   accountId: string
   products: Array<{ id: string, categoryId: string, name: string, description: string, price: number, available: boolean, picture?: string, quantity: number }>
 } | null
-export type LoadCartWithProductsRepository = (input: Input) => Promise<Output>
+export type LoadCartWithProducts = (input: Input) => Promise<Output>
