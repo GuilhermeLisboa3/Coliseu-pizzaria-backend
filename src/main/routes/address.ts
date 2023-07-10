@@ -11,9 +11,9 @@ import {
 import { Router } from 'express'
 
 export default (router: Router): void => {
-  router.get('/address', auth, adapt(makeLoadAddressByZipCodeController()))
   router.post('/address', auth, adapt(makeAddAddressController()))
   router.put('/address', auth, adapt(makeUpdateAddressController()))
   router.get('/addresses', auth, adapt(makeListAddressesController()))
+  router.get('/address/:zipCode', auth, adapt(makeLoadAddressByZipCodeController()))
   router.delete('/address/:id', auth, adapt(makeDeleteAddressController()))
 }

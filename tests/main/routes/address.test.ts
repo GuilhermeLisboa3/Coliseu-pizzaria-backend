@@ -34,12 +34,11 @@ describe('Address routes', () => {
     await prisma.user.create({ data: { id, name, email, password, role: 'admin' } })
   })
 
-  describe('GET /address', () => {
+  describe('GET /address/:zipCode', () => {
     it('should return 200 on success', async () => {
       const { status, body } = await request(app)
-        .get('/address')
+        .get(`/address/${zipCode}`)
         .set({ authorization: `Bearer: ${token}` })
-        .send({ zipCode })
 
       expect(status).toBe(200)
       expect(body).toEqual({ neighborhood, street })
@@ -48,9 +47,8 @@ describe('Address routes', () => {
     it('should return 400 if zipCode not exists', async () => {
       searchSpy.mockReturnValueOnce(undefined)
       const { status, body: { error } } = await request(app)
-        .get('/address')
+        .get(`/address/${zipCode}`)
         .set({ authorization: `Bearer: ${token}` })
-        .send({ zipCode })
 
       expect(status).toBe(400)
       expect(error).toBe(new FieldNotFoundError('zipCode').message)
