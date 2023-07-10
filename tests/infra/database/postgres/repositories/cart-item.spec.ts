@@ -53,4 +53,14 @@ describe('CartItemRepository', () => {
       expect(result).toMatchObject({ id, cartId: id, productId: id, quantity: 2 })
     })
   })
+
+  describe('delete()', () => {
+    it('should return undefined on success', async () => {
+      await prisma.cartItem.create({ data: { id, cartId: id, productId: id, quantity: 1 } })
+
+      const result = await sut.delete({ id })
+
+      expect(result).toBeUndefined()
+    })
+  })
 })
