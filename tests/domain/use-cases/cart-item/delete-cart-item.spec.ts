@@ -22,6 +22,7 @@ describe('DeleteCartItem', () => {
 
   beforeAll(() => {
     cartRepository.load.mockResolvedValue({ id, accountId })
+    cartItemRepository.load.mockResolvedValue({ id, cartId: id, productId, quantity: 2 })
     productRepository.load.mockResolvedValue({ id: productId, available, description, name, picture, price, categoryId })
   })
 
@@ -80,5 +81,13 @@ describe('DeleteCartItem', () => {
 
     expect(cartItemRepository.load).toHaveBeenCalledWith({ cartId: id, productId })
     expect(cartItemRepository.load).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw FieldNotFoundError if LoadCartItemRepository return null', async () => {
+    cartItemRepository.load.mockResolvedValueOnce(null)
+
+    const promise = sut({ accountId, productId })
+
+    await expect(promise).rejects.toThrow(new FieldNotFoundError('cartItem'))
   })
 })
