@@ -57,5 +57,14 @@ describe('Cart Item routes', () => {
       expect(status).toBe(400)
       expect(error).toEqual(new FieldNotFoundError('productId').message)
     })
+
+    it('should return 204 on success', async () => {
+      await prisma.cartItem.create({ data: { cartId: id, productId: id, quantity: 2 } })
+      const { status } = await request(app)
+        .delete(`/cart-item/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(204)
+    })
   })
 })

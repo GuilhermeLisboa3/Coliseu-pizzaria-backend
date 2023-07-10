@@ -115,6 +115,8 @@ describe('DeleteCartItem', () => {
   })
 
   it('should call DeleteCartItemRepository if LoadCartItemRepository return quantity one', async () => {
+    cartItemRepository.load.mockResolvedValueOnce({ id, cartId: id, productId, quantity: 1 })
+
     await sut({ accountId, productId })
 
     expect(cartItemRepository.delete).toHaveBeenCalledWith({ id })
@@ -122,6 +124,7 @@ describe('DeleteCartItem', () => {
   })
 
   it('should rethrow if DeleteCartItemRepository throws', async () => {
+    cartItemRepository.load.mockResolvedValueOnce({ id, cartId: id, productId, quantity: 1 })
     cartItemRepository.delete.mockRejectedValueOnce(error)
 
     const promise = sut({ accountId, productId })

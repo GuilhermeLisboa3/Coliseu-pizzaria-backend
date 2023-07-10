@@ -21,6 +21,7 @@ export const deleteCartItemUseCase: Setup = (productRepository, cartRepository, 
   if (!cartItem) throw new FieldNotFoundError('cartItem')
   if (cartItem.quantity > 1) {
     await cartItemRepository.update({ id: cartItem.id, quantity: cartItem.quantity - 1 })
+    return
   }
   await cartItemRepository.delete({ id: cartItem.id })
 }
