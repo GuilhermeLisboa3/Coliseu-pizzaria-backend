@@ -14,11 +14,11 @@ describe('Cart Item routes', () => {
   const { description, picture, price, available } = productParams
 
   beforeEach(async () => {
-    await prisma.$queryRaw`DELETE FROM users`
-    await prisma.$queryRaw`DELETE FROM categories`
-    await prisma.$queryRaw`DELETE FROM products`
-    await prisma.$queryRaw`DELETE FROM carts`
     await prisma.$queryRaw`DELETE FROM "cartItems"`
+    await prisma.$queryRaw`DELETE FROM carts`
+    await prisma.$queryRaw`DELETE FROM users`
+    await prisma.$queryRaw`DELETE FROM products`
+    await prisma.$queryRaw`DELETE FROM categories`
     await prisma.user.create({ data: { id, name, email, password, role: 'admin' } })
     await prisma.cart.create({ data: { id, userId: id } })
     await prisma.category.create({ data: { id, name } })

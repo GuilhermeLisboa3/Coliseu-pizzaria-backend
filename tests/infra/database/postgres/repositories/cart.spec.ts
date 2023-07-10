@@ -7,8 +7,11 @@ describe('CartRepository', () => {
   const { id, email, name, password } = accountParams
 
   beforeEach(async () => {
-    await prisma.$queryRaw`DELETE FROM users`
+    await prisma.$queryRaw`DELETE FROM "cartItems"`
     await prisma.$queryRaw`DELETE FROM carts`
+    await prisma.$queryRaw`DELETE FROM users`
+    await prisma.$queryRaw`DELETE FROM products`
+    await prisma.$queryRaw`DELETE FROM categories`
     await prisma.user.create({ data: { id, name, password, email } })
     sut = new CartRepository()
   })

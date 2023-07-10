@@ -2,7 +2,7 @@ import { accountParams, productParams, categoryParams } from '@/tests/mocks'
 import { DeleteCartItem, deleteCartItemUseCase } from '@/domain/use-cases/cart-item'
 import { LoadProductRepository } from '@/domain/contracts/database/repositories/product'
 import { LoadCartRepository } from '@/domain/contracts/database/repositories/cart'
-import { LoadCartItemRepository, UpdateCartItemRepository } from '@/domain/contracts/database/repositories/cart-item'
+import { LoadCartItemRepository, UpdateCartItemRepository, DeleteCartItemRepository } from '@/domain/contracts/database/repositories/cart-item'
 import { FieldNotFoundError } from '@/domain/error'
 
 import { mock } from 'jest-mock-extended'
@@ -14,7 +14,7 @@ describe('DeleteCartItem', () => {
   const id = faker.datatype.uuid()
   const productRepository = mock<LoadProductRepository>()
   const cartRepository = mock<LoadCartRepository>()
-  const cartItemRepository = mock<LoadCartItemRepository & UpdateCartItemRepository>()
+  const cartItemRepository = mock<LoadCartItemRepository & UpdateCartItemRepository & DeleteCartItemRepository>()
 
   const { id: accountId } = accountParams
   const { id: categoryId } = categoryParams
@@ -112,5 +112,12 @@ describe('DeleteCartItem', () => {
     const promise = sut({ accountId, productId })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('should call DeleteCartItemRepository if LoadCartItemRepository return quantity one', async () => {
+    await sut({ accountId, productId })
+
+    expect(cartItemRepository.delete).toHaveBeenCalledWith({ id })
+    expect(cartItemRepository.delete).toHaveBeenCalledTimes(1)
   })
 })

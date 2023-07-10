@@ -7,6 +7,9 @@ describe('ProductRepository', () => {
   const { available, description, name, picture, price, id } = productParams
 
   beforeEach(async () => {
+    await prisma.$queryRaw`DELETE FROM "cartItems"`
+    await prisma.$queryRaw`DELETE FROM carts`
+    await prisma.$queryRaw`DELETE FROM users`
     await prisma.$queryRaw`DELETE FROM products`
     await prisma.$queryRaw`DELETE FROM categories`
     await prisma.category.create({ data: { id, name } })
