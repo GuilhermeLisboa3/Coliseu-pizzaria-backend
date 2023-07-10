@@ -9,6 +9,8 @@ import { loadAddressByZipCode, addAddress, updateAddress, listAddresses, deleteA
 import { loadAddressByZipCodeResponse, addAddressRequest, addAddressResponse, updateAddressRequest, listAddressesResponse } from '@/main/docs/schemas/address'
 import { addCartItem, deleteCartItem } from '@/main/docs/paths/cart-item'
 import { cartItemSchema } from '@/main/docs/schemas/cart-item'
+import { loadCartWithProducts } from '@/main/docs/paths/cart'
+import { loadCartWithProductsResponse } from '@/main/docs/schemas/cart'
 import { badRequest, serverError, unauthorized, forbidden, securitySchemes } from '@/main/docs/components'
 
 export const swagger = {
@@ -23,7 +25,7 @@ export const swagger = {
     }
   },
   servers: [{ url: '/' }],
-  tags: [{ name: 'Account' }, { name: 'Category' }, { name: 'Product' }, { name: 'Address' }, { name: 'Cart-Item' }],
+  tags: [{ name: 'Account' }, { name: 'Category' }, { name: 'Product' }, { name: 'Address' }, { name: 'Cart-Item' }, { name: 'Cart' }],
   paths: {
     '/signup': signup,
     '/login': login,
@@ -39,7 +41,8 @@ export const swagger = {
     '/addresses': listAddresses,
     '/address/{id}': deleteAddress,
     '/cart-item/{id}': addCartItem,
-    '/cart-item/{id}/': deleteCartItem
+    '/cart-item/{id}/': deleteCartItem,
+    '/cart': loadCartWithProducts
   },
   schemas: {
     error,
@@ -56,7 +59,8 @@ export const swagger = {
     addAddressResponse,
     updateAddressRequest,
     listAddressesResponse,
-    cartItemSchema
+    cartItemSchema,
+    loadCartWithProductsResponse
   },
   components: { securitySchemes, forbidden, badRequest, serverError, unauthorized }
 }
