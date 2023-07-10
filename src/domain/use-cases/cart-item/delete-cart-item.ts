@@ -1,12 +1,12 @@
 import { LoadCartRepository } from '@/domain/contracts/database/repositories/cart'
-import { LoadCartItemRepository } from '@/domain/contracts/database/repositories/cart-item'
+import { LoadCartItemRepository, UpdateCartItemRepository } from '@/domain/contracts/database/repositories/cart-item'
 import { LoadProductRepository } from '@/domain/contracts/database/repositories/product'
 import { FieldNotFoundError } from '@/domain/error'
 
 type Setup = (
   productRepository: LoadProductRepository,
   cartRepository: LoadCartRepository,
-  cartItemRepository: LoadCartItemRepository
+  cartItemRepository: LoadCartItemRepository & UpdateCartItemRepository
 ) => DeleteCartItem
 type Input = { accountId: string, productId: string }
 type Output = void
@@ -19,4 +19,7 @@ export const deleteCartItemUseCase: Setup = (productRepository, cartRepository, 
   if (!cart) throw new FieldNotFoundError('cart')
   const cartItem = await cartItemRepository.load({ cartId: cart.id, productId })
   if (!cartItem) throw new FieldNotFoundError('cartItem')
+  if (cartItem.quantity > 1) {
+    await cartItemRepository.update({ id: cartItem.id, quantity: cartItem.quantity - 1 })
+  }
 }
