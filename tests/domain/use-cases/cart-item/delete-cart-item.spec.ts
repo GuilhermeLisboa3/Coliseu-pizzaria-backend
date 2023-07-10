@@ -120,4 +120,12 @@ describe('DeleteCartItem', () => {
     expect(cartItemRepository.delete).toHaveBeenCalledWith({ id })
     expect(cartItemRepository.delete).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if DeleteCartItemRepository throws', async () => {
+    cartItemRepository.delete.mockRejectedValueOnce(error)
+
+    const promise = sut({ accountId, productId })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
