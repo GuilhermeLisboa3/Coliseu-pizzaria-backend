@@ -56,5 +56,11 @@ describe('CartRepository', () => {
         products: [{ id, name, description, available, picture, price, categoryId: id, quantity: 3 }]
       })
     })
+
+    it('should return null if cart not exists', async () => {
+      const result = await sut.loadWithProducts({ accountId: id })
+
+      expect(result).toBeNull()
+    })
   })
 })
