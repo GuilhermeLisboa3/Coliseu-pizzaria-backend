@@ -3,8 +3,8 @@ import { signup, login } from '@/main/docs/paths/account'
 import { signUpRequest, loginRequest, loginResponse } from '@/main/docs/schemas/account'
 import { addCategory, listCategory, deleteCategory } from '@/main/docs/paths/category'
 import { addCategoryRequest, listCategoryResponse } from '@/main/docs/schemas/category'
-import { addProduct } from '@/main/docs/paths/product'
-import { productSchema, addProductRequest } from '@/main/docs/schemas/product'
+import { addProduct, updateProduct } from '@/main/docs/paths/product'
+import { productSchema, addProductRequest, updateProductRequest } from '@/main/docs/schemas/product'
 import { badRequest, serverError, unauthorized, forbidden, securitySchemes } from '@/main/docs/components'
 
 export const swagger = {
@@ -26,7 +26,8 @@ export const swagger = {
     '/category': addCategory,
     '/categories': listCategory,
     '/category/{id}': deleteCategory,
-    '/product': addProduct
+    '/product': addProduct,
+    '/product/{id}': updateProduct
   },
   schemas: {
     error,
@@ -36,7 +37,8 @@ export const swagger = {
     addCategoryRequest,
     productSchema,
     listCategoryResponse,
-    addProductRequest
+    addProductRequest,
+    updateProductRequest
   },
   components: { securitySchemes, forbidden, badRequest, serverError, unauthorized }
 }
