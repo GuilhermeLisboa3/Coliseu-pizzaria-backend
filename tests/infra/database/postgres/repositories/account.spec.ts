@@ -1,5 +1,5 @@
 import { AccountRepository } from '@/infra/database/postgres/repositories'
-import { accountParams } from '@/tests/mocks'
+import { accountParams, resetDataBase } from '@/tests/mocks'
 import { prisma } from '@/infra/database/postgres/helpers'
 
 describe('AccountRepository', () => {
@@ -7,12 +7,7 @@ describe('AccountRepository', () => {
   const { email, name, password, id } = accountParams
 
   beforeEach(async () => {
-    await prisma.$queryRaw`DELETE FROM "cartItems"`
-    await prisma.$queryRaw`DELETE FROM carts`
-    await prisma.$queryRaw`DELETE FROM addresses`
-    await prisma.$queryRaw`DELETE FROM users`
-    await prisma.$queryRaw`DELETE FROM products`
-    await prisma.$queryRaw`DELETE FROM categories`
+    await resetDataBase()
     sut = new AccountRepository()
   })
 

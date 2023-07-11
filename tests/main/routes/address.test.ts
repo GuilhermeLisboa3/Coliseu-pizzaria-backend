@@ -1,5 +1,5 @@
 import { env } from '@/main/config'
-import { accountParams, addressParams } from '@/tests/mocks'
+import { accountParams, addressParams, resetDataBase } from '@/tests/mocks'
 import { app } from '@/main/config/app'
 import { prisma } from '@/infra/database/postgres/helpers'
 import { ZipCodeApi } from '@/infra/gateways'
@@ -26,12 +26,7 @@ describe('Address routes', () => {
   })
 
   beforeEach(async () => {
-    await prisma.$queryRaw`DELETE FROM "cartItems"`
-    await prisma.$queryRaw`DELETE FROM carts`
-    await prisma.$queryRaw`DELETE FROM addresses`
-    await prisma.$queryRaw`DELETE FROM users`
-    await prisma.$queryRaw`DELETE FROM products`
-    await prisma.$queryRaw`DELETE FROM categories`
+    await resetDataBase()
     await prisma.user.create({ data: { id, name, email, password, role: 'admin' } })
   })
 

@@ -1,4 +1,4 @@
-import { accountParams } from '@/tests/mocks'
+import { accountParams, resetDataBase } from '@/tests/mocks'
 import { app } from '@/main/config/app'
 import { prisma } from '@/infra/database/postgres/helpers'
 
@@ -10,12 +10,7 @@ describe('Account routes', () => {
   const { name, email, password } = accountParams
 
   beforeEach(async () => {
-    await prisma.$queryRaw`DELETE FROM "cartItems"`
-    await prisma.$queryRaw`DELETE FROM carts`
-    await prisma.$queryRaw`DELETE FROM addresses`
-    await prisma.$queryRaw`DELETE FROM users`
-    await prisma.$queryRaw`DELETE FROM products`
-    await prisma.$queryRaw`DELETE FROM categories`
+    await resetDataBase()
   })
 
   describe('POST /signup', () => {

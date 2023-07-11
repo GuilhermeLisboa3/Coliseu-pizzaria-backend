@@ -1,5 +1,5 @@
 import { ProductRepository } from '@/infra/database/postgres/repositories'
-import { productParams } from '@/tests/mocks'
+import { productParams, resetDataBase } from '@/tests/mocks'
 import { prisma } from '@/infra/database/postgres/helpers'
 
 describe('ProductRepository', () => {
@@ -7,12 +7,7 @@ describe('ProductRepository', () => {
   const { available, description, name, picture, price, id } = productParams
 
   beforeEach(async () => {
-    await prisma.$queryRaw`DELETE FROM "cartItems"`
-    await prisma.$queryRaw`DELETE FROM carts`
-    await prisma.$queryRaw`DELETE FROM addresses`
-    await prisma.$queryRaw`DELETE FROM users`
-    await prisma.$queryRaw`DELETE FROM products`
-    await prisma.$queryRaw`DELETE FROM categories`
+    await resetDataBase()
     await prisma.category.create({ data: { id, name } })
     sut = new ProductRepository()
   })

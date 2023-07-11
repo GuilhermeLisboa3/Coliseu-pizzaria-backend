@@ -1,5 +1,5 @@
 import { AddressRepository } from '@/infra/database/postgres/repositories'
-import { accountParams, addressParams } from '@/tests/mocks'
+import { accountParams, addressParams, resetDataBase } from '@/tests/mocks'
 import { prisma } from '@/infra/database/postgres/helpers'
 
 describe('AddressRepository', () => {
@@ -8,12 +8,7 @@ describe('AddressRepository', () => {
   const { active, complement, neighborhood, number, street, surname, zipCode } = addressParams
 
   beforeEach(async () => {
-    await prisma.$queryRaw`DELETE FROM "cartItems"`
-    await prisma.$queryRaw`DELETE FROM carts`
-    await prisma.$queryRaw`DELETE FROM addresses`
-    await prisma.$queryRaw`DELETE FROM users`
-    await prisma.$queryRaw`DELETE FROM products`
-    await prisma.$queryRaw`DELETE FROM categories`
+    await resetDataBase()
     await prisma.user.create({ data: { id, name, email, password } })
     sut = new AddressRepository()
   })
