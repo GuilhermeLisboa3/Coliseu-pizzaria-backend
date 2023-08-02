@@ -5,9 +5,9 @@ export class ZipCodeApi {
   constructor (private readonly httpGetClient: HttpGetClient) {}
 
   async search ({ zipCode }: SearchAddressByZipCode.Input): Promise<SearchAddressByZipCode.Output> {
-    const url = `https://brasilapi.com.br/api/cep/v2/${zipCode}`
-    const { status, data: { neighborhood, street } } = await this.httpGetClient.get({ url })
+    const url = `https://viacep.com.br/ws/${zipCode}/json/`
+    const { status, data: { bairro, logradouro } } = await this.httpGetClient.get({ url })
     if (status !== 200) return undefined
-    return { neighborhood, street }
+    return { neighborhood: bairro, street: logradouro }
   }
 }

@@ -10,7 +10,7 @@ describe('ZipCodeApi', () => {
   const { zipCode, neighborhood, street } = addressParams
 
   beforeAll(() => {
-    httpGetClient.get.mockResolvedValue({ status: 200, data: { neighborhood, street } })
+    httpGetClient.get.mockResolvedValue({ status: 200, data: { bairro: neighborhood, logradouro: street } })
   })
 
   beforeEach(() => {
@@ -20,12 +20,12 @@ describe('ZipCodeApi', () => {
   it('should call httpGetClient with correct values', async () => {
     await sut.search({ zipCode })
 
-    expect(httpGetClient.get).toHaveBeenCalledWith({ url: `https://brasilapi.com.br/api/cep/v2/${zipCode}` })
+    expect(httpGetClient.get).toHaveBeenCalledWith({ url: `https://viacep.com.br/ws/${zipCode}/json/` })
     expect(httpGetClient.get).toHaveBeenCalledTimes(1)
   })
 
   it('should return undefined if httpGetClient returns status different 200', async () => {
-    httpGetClient.get.mockResolvedValueOnce({ status: 400, data: { neighborhood: null, street: null } })
+    httpGetClient.get.mockResolvedValueOnce({ status: 400, data: { bairro: null, logradouro: null } })
     const result = await sut.search({ zipCode })
 
     expect(result).toBeUndefined()
