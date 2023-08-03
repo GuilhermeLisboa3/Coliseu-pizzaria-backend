@@ -23,7 +23,9 @@ export class CartRepository implements AddCartRepository, LoadCartRepository, Lo
         cartItem: {
           select: {
             quantity: true,
-            product: { select: { id: true, available: true, description: true, price: true, name: true, picture: true, categoryId: true } }
+            product: {
+              select: { id: true, available: true, description: true, price: true, name: true, picture: true, categoryId: true, category: { select: { name: true } } }
+            }
           }
         }
       }
@@ -33,7 +35,7 @@ export class CartRepository implements AddCartRepository, LoadCartRepository, Lo
       id: cart.id,
       accountId: cart.userId,
       products: cart.cartItem.map(cartItem => {
-        return { ...PrismaHelper.productMap(cartItem.product), quantity: cartItem.quantity }
+        return { ...PrismaHelper.productMap(cartItem.product), quantity: cartItem.quantity, categoryName: cartItem.product.category.name }
       })
     }
   }

@@ -49,7 +49,7 @@ describe('CartRepository', () => {
       expect(result).toEqual({
         id,
         accountId: id,
-        products: [{ id, name, description, available, picture, price, categoryId: id, quantity: 3 }]
+        products: [{ id, name, description, available, picture, price, categoryId: id, quantity: 3, categoryName: name }]
       })
     })
 
