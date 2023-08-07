@@ -6,8 +6,8 @@ export class ZipCodeApi {
 
   async search ({ zipCode }: SearchAddressByZipCode.Input): Promise<SearchAddressByZipCode.Output> {
     const url = `https://viacep.com.br/ws/${zipCode}/json/`
-    const { status, data: { bairro, logradouro } } = await this.httpGetClient.get({ url })
-    if (status !== 200) return undefined
-    return { neighborhood: bairro, street: logradouro }
+    const { status, data } = await this.httpGetClient.get({ url })
+    if (status !== 200 || data.erro) return undefined
+    return { neighborhood: data.bairro, street: data.logradouro }
   }
 }
