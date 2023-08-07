@@ -16,8 +16,8 @@ import { badRequest, serverError, unauthorized, forbidden, securitySchemes } fro
 export const swagger = {
   openapi: '3.0.0',
   info: {
-    title: 'Fast food',
-    description: 'API created for the Fast food application',
+    title: 'Coliseu Pizzaria',
+    description: 'API created for the Coliseu Pizzaria application',
     version: '1.0.0',
     contact: {
       name: 'Guilherme Gonçalves Lisboa',
