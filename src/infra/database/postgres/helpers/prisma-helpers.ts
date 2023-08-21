@@ -1,10 +1,9 @@
-import { Decimal } from '@prisma/client/runtime'
 
 type ProductInput = {
   id: string
   name: string
   description: string
-  price: Decimal
+  price: any
   available: boolean
   picture: string | null
   categoryId: string

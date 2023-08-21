@@ -99,7 +99,7 @@ describe('Product routes', () => {
     })
 
     it('should return 204 on success', async () => {
-      await prisma.product.create({ data: { id, name, description, picture, price, available, categoryId: id } })
+      await prisma.product.create({ data: { id, name, description, price, available, categoryId: id } })
       const { status } = await request(app)
         .delete(`/product/${id}`)
         .set({ authorization: `Bearer: ${token}` })
